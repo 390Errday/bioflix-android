@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <color name="colorPrimaryLightest">#F1F7E4</color>
+    <color name="colorPrimaryLight">#CDE69A</color>
+    <color name="colorPrimary">#7A9F35</color>
+    <color name="colorPrimaryDark">#3A5800</color>
+    <color name="colorPrimaryDarkest">#1C2A00</color>
+
+
+    <color name="colorAccentLightest">#D0CAD9</color>
+    <color name="colorAccentLight">#8A75A7</color>
+    <color name="colorAccent">#4B2D73</color>
+    <color name="colorAccentDark">#1E0540</color>
+    <color name="colorAccentDarkest">#0E011F</color>
+
+    <color name="colorAccent2Lightest">#FFF1EB</color>
+    <color name="colorAccent2Light">#F6BCA5</color>
+    <color name="colorAccent2">#AA5939</color>
+    <color name="colorAccent2Dark">#5E1B00</color>
+    <color name="colorAccent2Darkest">#2D0D00</color>
+
+    <color name="colorAccent3Lightest">#E8D6E0</color>
+    <color name="colorAccent3Light">#C585A9</color>
+    <color name="colorAccent3">#882D60</color>
+    <color name="colorAccent3Dark">#4B002A</color>
+    <color name="colorAccent3Darkest">#240014</color>
+
+    <color name="colorWhite">#FFFF</color>
+    <color name="colorWhiteDark">#696969</color>
+    <color name="colorWhiteLight">#939393</color>
+    <color name="colorWhiteLightest">#D9D9D9</color>
+
+    <color name="colorBlack">#000</color>
+    <color name="colorBlackLight">#333333</color>
+</resources>
