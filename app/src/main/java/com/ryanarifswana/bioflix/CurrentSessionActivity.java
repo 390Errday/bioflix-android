@@ -27,6 +27,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.microsoft.band.BandException;
 import com.microsoft.band.sensors.HeartRateQuality;
 
 import java.lang.ref.WeakReference;
@@ -98,18 +99,29 @@ public class CurrentSessionActivity extends AppCompatActivity {
 
     @Override
     public void onPause() {
+        Log.d("onPause", "called");
+        if(!MSBandService.inSession) {
+            MSBandService.stopRates();
+            this.unbindService(bandConnection);
+        }
         super.onPause();
     }
 
     @Override
     public void onResume() {
+        if(!MSBandService.inSession) {
+            bindToService();
+        }
         super.onResume();
     }
 
-//    public void onDestroy() {
-//        super.onDestroy();
-//        finish();
-//    }
+    @Override
+    protected void onDestroy() {
+        Log.d("onDestroyed", "called");
+        MSBandService.stopRates();
+        super.onDestroy();
+        finish();
+    }
 
     private void bindToService() {
         if(!serviceBound) {

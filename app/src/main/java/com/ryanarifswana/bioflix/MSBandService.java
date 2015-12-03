@@ -34,6 +34,7 @@ import java.lang.ref.WeakReference;
 
 public class MSBandService extends Service {
     static MSBandService bandService = null;
+    private static BandClient client;
     public final static int MSG_ERROR = 0;
     public final static int MSG_BAND_NOT_REGISTERED = 1;
     public final static int MSG_HR_TICK = 2;
@@ -46,8 +47,8 @@ public class MSBandService extends Service {
     public final static String BUNDLE_GSR_RESISTANCE = "resistance";
     public final static String BUNDLE_TIMER_TIME = "time";
 
-    private final static int HRBUFFER = 20;     //buffer before writing to db
-    private final static int GSRBUFFER = 10;
+    private final static int HR_BUFFER = 20;     //buffer before writing to db
+    private final static int GSR_BUFFER = 10;
 
     private static long baseTime;
 
@@ -65,7 +66,6 @@ public class MSBandService extends Service {
     private static String sessionViewerName;
 
     private final IBinder mBinder = new LocalBinder();
-    private static BandClient client;
     private static ResultReceiver resultReceiver;
     private static Bundle hrBundle;
     private static Bundle gsrBundle;
@@ -91,10 +91,10 @@ public class MSBandService extends Service {
         gsrBundle = new Bundle();
         timerBundle = new Bundle();
         errBundle = new Bundle();
-        hrArray = new int[HRBUFFER];
-        hrTimeArray = new long[HRBUFFER];
-        gsrArray = new int[GSRBUFFER];
-        gsrTimeArray = new long[GSRBUFFER];
+        hrArray = new int[HR_BUFFER];
+        hrTimeArray = new long[HR_BUFFER];
+        gsrArray = new int[GSR_BUFFER];
+        gsrTimeArray = new long[GSR_BUFFER];
         hrIndex = 0;
         gsrIndex = 0;
         inSession = false;
@@ -111,6 +111,9 @@ public class MSBandService extends Service {
         }
     }
 
+    /*
+    TODO: to be completed
+     */
     public static void continueSession() {
         if(!inSession) {
             baseTime = System.currentTimeMillis() - baseTime;
@@ -130,9 +133,23 @@ public class MSBandService extends Service {
         new HeartRateSubscriptionTask().execute();
     }
 
+    public static void stopRates() {
+        if (client != null) {
+            try {
+                client.disconnect().await();
+            } catch (InterruptedException e) {
+                Log.e("stopRates:", e.getMessage());
+            } catch (BandException e) {
+                Log.e("stopRates:", e.getMessage());
+            }
+        }
+    }
+
     public void startGsr() {
         new GsrSubscriptionTask().execute();
     }
+
+
 
     public void requestConsent(WeakReference<Activity> reference) {
         Log.d("Consent received", "True!!");
@@ -142,10 +159,10 @@ public class MSBandService extends Service {
     public void addHr(Bundle bundle) {
         hrArray[hrIndex] = bundle.getInt(BUNDLE_HR_HR);
         hrTimeArray[hrIndex] = getElapsedTime();
-        if(hrIndex == HRBUFFER - 1) {
+        if(hrIndex == HR_BUFFER - 1) {
             db.appendHR(sessionId, hrArray, hrTimeArray);
-            hrArray = new int[HRBUFFER];
-            hrTimeArray = new long[HRBUFFER];
+            hrArray = new int[HR_BUFFER];
+            hrTimeArray = new long[HR_BUFFER];
             hrIndex = 0;
         }
         else {
@@ -156,10 +173,10 @@ public class MSBandService extends Service {
     public void addGsr(Bundle bundle) {
         gsrArray[gsrIndex] = bundle.getInt(BUNDLE_GSR_RESISTANCE);
         gsrTimeArray[gsrIndex] = getElapsedTime();
-        if(gsrIndex == GSRBUFFER - 1) {
+        if(gsrIndex == GSR_BUFFER - 1) {
             db.appendGsr(sessionId, gsrArray, gsrTimeArray);
-            gsrArray = new int[GSRBUFFER];
-            gsrTimeArray = new long[GSRBUFFER];
+            gsrArray = new int[GSR_BUFFER];
+            gsrTimeArray = new long[GSR_BUFFER];
             gsrIndex = 0;
         }
         else {

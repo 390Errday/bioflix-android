@@ -7,19 +7,10 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="02c3d107-b74c-4cb8-8d23-ef21c6b04eb0" name="Default" comment="">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/appcompat_v7_23_1_1.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/bioflix-android.iml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/design_23_1_1.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/microsoft_band_1_3_10929_1.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/recyclerview_v7_23_1_1.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/runConfigurations.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/support_annotations_23_1_1.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/support_v4_23_1_1.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/java/com/ryanarifswana/bioflix/CurrentSessionActivity.java" afterPath="$PROJECT_DIR$/app/src/main/java/com/ryanarifswana/bioflix/CurrentSessionActivity.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/java/com/ryanarifswana/bioflix/database/DatabaseHandler.java" afterPath="$PROJECT_DIR$/app/src/main/java/com/ryanarifswana/bioflix/database/DatabaseHandler.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/java/com/ryanarifswana/bioflix/MSBandService.java" afterPath="$PROJECT_DIR$/app/src/main/java/com/ryanarifswana/bioflix/MSBandService.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/app.iml" afterPath="$PROJECT_DIR$/app/app.iml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/res/layout/content_current_session.xml" afterPath="$PROJECT_DIR$/app/src/main/res/layout/content_current_session.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/misc.xml" afterPath="$PROJECT_DIR$/.idea/misc.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
     <ignored path="bioflix-android.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -40,25 +31,47 @@
   </component>
   <component name="FileEditorManager">
     <leaf>
-      <file leaf-file-name="MSBandService.java" pinned="false" current-in-tab="true">
+      <file leaf-file-name="MSBandService.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/app/src/main/java/com/ryanarifswana/bioflix/MSBandService.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.29294273">
-              <caret line="125" column="10" selection-start-line="125" selection-start-column="10" selection-end-line="125" selection-end-column="10" />
+            <state vertical-scroll-proportion="0.0">
+              <caret line="142" column="52" selection-start-line="142" selection-start-column="52" selection-end-line="142" selection-end-column="52" />
               <folding>
                 <element signature="class#LocalBinder#0;class#MSBandService#0" expanded="false" />
-                <element signature="method#onBind#0;class#MSBandService#0" expanded="false" />
                 <element signature="method#startSession#0;class#MSBandService#0" expanded="false" />
                 <element signature="method#continueSession#0;class#MSBandService#0" expanded="false" />
+                <element signature="method#stopSession#0;class#MSBandService#0" expanded="false" />
+                <element signature="e#4456#4457#0" expanded="true" />
+                <element signature="e#4513#4514#0" expanded="true" />
+                <element signature="e#4897#4898#0" expanded="true" />
+                <element signature="e#4948#4949#0" expanded="true" />
                 <element signature="method#requestConsent#0;class#MSBandService#0" expanded="false" />
+                <element signature="method#addHr#0;class#MSBandService#0" expanded="false" />
+                <element signature="method#addGsr#0;class#MSBandService#0" expanded="false" />
                 <element signature="method#sendError#0;class#MSBandService#0" expanded="false" />
-                <element signature="method#getConnectedBandClient#0;class#MSBandService#0" expanded="false" />
-                <element signature="class#GsrSubscriptionTask#0;class#MSBandService#0" expanded="false" />
-                <element signature="method#doInBackground#0;class#GsrSubscriptionTask#0;class#MSBandService#0" expanded="false" />
-                <element signature="class#HeartRateSubscriptionTask#0;class#MSBandService#0" expanded="false" />
-                <element signature="method#doInBackground#0;class#HeartRateSubscriptionTask#0;class#MSBandService#0" expanded="false" />
-                <element signature="class#HeartRateConsentTask#0;class#MSBandService#0" expanded="false" />
-                <element signature="method#doInBackground#0;class#HeartRateConsentTask#0;class#MSBandService#0" expanded="false" />
+                <element signature="method#startTimer#0;class#MSBandService#0" expanded="false" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="CurrentSessionActivity.java" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/app/src/main/java/com/ryanarifswana/bioflix/CurrentSessionActivity.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.061251663">
+              <caret line="112" column="28" selection-start-line="112" selection-start-column="28" selection-end-line="112" selection-end-column="28" />
+              <folding>
+                <element signature="method#doNotLocked#0;class#CurrentSessionActivity#0" expanded="false" />
+                <element signature="method#doLocked#0;class#CurrentSessionActivity#0" expanded="false" />
+                <element signature="class#UpdateHr#0;class#CurrentSessionActivity#0" expanded="false" />
+                <element signature="method#UpdateHr#0;class#UpdateHr#0;class#CurrentSessionActivity#0" expanded="false" />
+                <element signature="method#run#0;class#UpdateHr#0;class#CurrentSessionActivity#0" expanded="false" />
+                <element signature="class#UpdateGSR#0;class#CurrentSessionActivity#0" expanded="false" />
+                <element signature="class#UpdateTimer#0;class#CurrentSessionActivity#0" expanded="false" />
+                <element signature="method#showRegisterBandSnackbar#0;class#CurrentSessionActivity#0" expanded="false" />
+                <element signature="docComment;field#bandConnection#0;class#CurrentSessionActivity#0" expanded="false" />
+                <element signature="class#BandResultsReceiver#0;class#CurrentSessionActivity#0" expanded="false" />
+                <element signature="method#onReceiveResult#0;class#BandResultsReceiver#0;class#CurrentSessionActivity#0" expanded="false" />
               </folding>
             </state>
           </provider>
@@ -1533,9 +1546,9 @@
       <list>
         <option value="$PROJECT_DIR$/app/src/main/java/com/ryanarifswana/bioflix/MainActivity.java" />
         <option value="$PROJECT_DIR$/app/src/main/res/layout/content_current_session.xml" />
-        <option value="$PROJECT_DIR$/app/src/main/java/com/ryanarifswana/bioflix/CurrentSessionActivity.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/ryanarifswana/bioflix/database/DatabaseHandler.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/ryanarifswana/bioflix/MSBandService.java" />
+        <option value="$PROJECT_DIR$/app/src/main/java/com/ryanarifswana/bioflix/CurrentSessionActivity.java" />
       </list>
     </option>
   </component>
@@ -1922,7 +1935,7 @@
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
-      <option name="time" value="3" />
+      <option name="time" value="7" />
     </breakpoint-manager>
     <watches-manager />
   </component>
@@ -1938,14 +1951,6 @@
         <state />
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/ryanarifswana/bioflix/NewSessionActivity.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="20" column="13" selection-start-line="20" selection-start-column="13" selection-end-line="20" selection-end-column="13" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/java/com/ryanarifswana/bioflix/MainActivity.java">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
@@ -1954,30 +1959,11 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/ryanarifswana/bioflix/CurrentSessionActivity.java">
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/ryanarifswana/bioflix/NewSessionActivity.java">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
-          <caret line="54" column="55" selection-start-line="54" selection-start-column="55" selection-end-line="54" selection-end-column="55" />
-          <folding>
-            <element signature="method#onCreate#0;class#CurrentSessionActivity#0" expanded="false" />
-            <element signature="e#3696#3727#0" expanded="false" />
-            <element signature="method#bindToService#0;class#CurrentSessionActivity#0" expanded="false" />
-            <element signature="method#doNotLocked#0;class#CurrentSessionActivity#0" expanded="false" />
-            <element signature="method#doLocked#0;class#CurrentSessionActivity#0" expanded="false" />
-            <element signature="class#UpdateHr#0;class#CurrentSessionActivity#0" expanded="false" />
-            <element signature="method#UpdateHr#0;class#UpdateHr#0;class#CurrentSessionActivity#0" expanded="false" />
-            <element signature="method#run#0;class#UpdateHr#0;class#CurrentSessionActivity#0" expanded="false" />
-            <element signature="e#5739#5787#0" expanded="false" />
-            <element signature="class#UpdateGSR#0;class#CurrentSessionActivity#0" expanded="false" />
-            <element signature="class#UpdateTimer#0;class#CurrentSessionActivity#0" expanded="false" />
-            <element signature="method#showRegisterBandSnackbar#0;class#CurrentSessionActivity#0" expanded="false" />
-            <element signature="docComment;field#bandConnection#0;class#CurrentSessionActivity#0" expanded="false" />
-            <element signature="class#7104:7805" expanded="false" />
-            <element signature="method#onServiceConnected#0;class#7104:7805" expanded="false" />
-            <element signature="method#onServiceDisconnected#0;class#7104:7805" expanded="false" />
-            <element signature="class#BandResultsReceiver#0;class#CurrentSessionActivity#0" expanded="false" />
-            <element signature="method#onReceiveResult#0;class#BandResultsReceiver#0;class#CurrentSessionActivity#0" expanded="false" />
-          </folding>
+          <caret line="20" column="13" selection-start-line="20" selection-start-column="13" selection-end-line="20" selection-end-column="13" />
+          <folding />
         </state>
       </provider>
     </entry>
@@ -1991,22 +1977,42 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/java/com/ryanarifswana/bioflix/MSBandService.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.29294273">
-          <caret line="125" column="10" selection-start-line="125" selection-start-column="10" selection-end-line="125" selection-end-column="10" />
+        <state vertical-scroll-proportion="0.0">
+          <caret line="142" column="52" selection-start-line="142" selection-start-column="52" selection-end-line="142" selection-end-column="52" />
           <folding>
             <element signature="class#LocalBinder#0;class#MSBandService#0" expanded="false" />
-            <element signature="method#onBind#0;class#MSBandService#0" expanded="false" />
             <element signature="method#startSession#0;class#MSBandService#0" expanded="false" />
             <element signature="method#continueSession#0;class#MSBandService#0" expanded="false" />
+            <element signature="method#stopSession#0;class#MSBandService#0" expanded="false" />
+            <element signature="e#4456#4457#0" expanded="true" />
+            <element signature="e#4513#4514#0" expanded="true" />
+            <element signature="e#4897#4898#0" expanded="true" />
+            <element signature="e#4948#4949#0" expanded="true" />
             <element signature="method#requestConsent#0;class#MSBandService#0" expanded="false" />
+            <element signature="method#addHr#0;class#MSBandService#0" expanded="false" />
+            <element signature="method#addGsr#0;class#MSBandService#0" expanded="false" />
             <element signature="method#sendError#0;class#MSBandService#0" expanded="false" />
-            <element signature="method#getConnectedBandClient#0;class#MSBandService#0" expanded="false" />
-            <element signature="class#GsrSubscriptionTask#0;class#MSBandService#0" expanded="false" />
-            <element signature="method#doInBackground#0;class#GsrSubscriptionTask#0;class#MSBandService#0" expanded="false" />
-            <element signature="class#HeartRateSubscriptionTask#0;class#MSBandService#0" expanded="false" />
-            <element signature="method#doInBackground#0;class#HeartRateSubscriptionTask#0;class#MSBandService#0" expanded="false" />
-            <element signature="class#HeartRateConsentTask#0;class#MSBandService#0" expanded="false" />
-            <element signature="method#doInBackground#0;class#HeartRateConsentTask#0;class#MSBandService#0" expanded="false" />
+            <element signature="method#startTimer#0;class#MSBandService#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/ryanarifswana/bioflix/CurrentSessionActivity.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.061251663">
+          <caret line="112" column="28" selection-start-line="112" selection-start-column="28" selection-end-line="112" selection-end-column="28" />
+          <folding>
+            <element signature="method#doNotLocked#0;class#CurrentSessionActivity#0" expanded="false" />
+            <element signature="method#doLocked#0;class#CurrentSessionActivity#0" expanded="false" />
+            <element signature="class#UpdateHr#0;class#CurrentSessionActivity#0" expanded="false" />
+            <element signature="method#UpdateHr#0;class#UpdateHr#0;class#CurrentSessionActivity#0" expanded="false" />
+            <element signature="method#run#0;class#UpdateHr#0;class#CurrentSessionActivity#0" expanded="false" />
+            <element signature="class#UpdateGSR#0;class#CurrentSessionActivity#0" expanded="false" />
+            <element signature="class#UpdateTimer#0;class#CurrentSessionActivity#0" expanded="false" />
+            <element signature="method#showRegisterBandSnackbar#0;class#CurrentSessionActivity#0" expanded="false" />
+            <element signature="docComment;field#bandConnection#0;class#CurrentSessionActivity#0" expanded="false" />
+            <element signature="class#BandResultsReceiver#0;class#CurrentSessionActivity#0" expanded="false" />
+            <element signature="method#onReceiveResult#0;class#BandResultsReceiver#0;class#CurrentSessionActivity#0" expanded="false" />
           </folding>
         </state>
       </provider>
