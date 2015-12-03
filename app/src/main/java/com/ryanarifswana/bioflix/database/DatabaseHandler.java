@@ -118,53 +118,96 @@ public class DatabaseHandler extends SQLiteOpenHelper{
         return sessionList;
     }
 
-    public int appenHR(long id, int[] hr, long[] hrTimes) {
+    public void concludeHr(long id, int[] hr, long[] hrTimes, int indexLength) {
         SQLiteDatabase db = this.getWritableDatabase();
-
         String query = "SELECT *" + " FROM " + TABLE_SESSIONS + " WHERE " + KEY_ID + "=" + id;
         Cursor cursor = db.rawQuery(query, null);
-        String hrString = "";
-        String hrTimesString = "";
+
         if(cursor.moveToFirst()) {
-            hrString = cursor.getString(cursor.getColumnIndex(KEY_HR_ARRAY));
-            hrTimesString = cursor.getString(cursor.getColumnIndex(KEY_HR_TIMES));
-            for(int i = 0; i < hr.length; i++) {
+            StringBuilder hrBuilder = new StringBuilder(cursor.getString(cursor.getColumnIndex(KEY_HR_ARRAY)));
+            StringBuilder hrTimesBuilder = new StringBuilder(cursor.getString(cursor.getColumnIndex(KEY_HR_TIMES)));
+            for(int i = 0; i < indexLength; i++) {
                 if(hr[i] > 0) {
-                    hrString += hr[i] + ",";
-                    hrTimesString += hrTimes[i] + ",";
+                    if(i == indexLength - 1) {
+                        hrBuilder.append(hr[i]);
+                        hrTimesBuilder.append(hrTimes[i]);
+                    }
+                    else {
+                        hrBuilder.append(hr[i]).append(",");
+                        hrBuilder.append(hrTimes[i]).append(",");
+                    }
                 }
             }
+            ContentValues values = new ContentValues();
+            values.put(KEY_HR_ARRAY, hrBuilder.toString());
+            values.put(KEY_HR_TIMES, hrTimesBuilder.toString());
         }
-
-        ContentValues values = new ContentValues();
-        values.put(KEY_HR_ARRAY, hrString);
-        values.put(KEY_HR_TIMES, hrTimesString);
-
-        return db.update(TABLE_SESSIONS, values, KEY_ID + " = ?", new String[] { String.valueOf(id) });
     }
 
-    public int appenGsr(long id, int[] gsr, long[] gsrTimes) {
+    public void concludeGsr(long id, int[] gsr, long[] gsrTimes, int indexLength) {
         SQLiteDatabase db = this.getWritableDatabase();
-
         String query = "SELECT *" + " FROM " + TABLE_SESSIONS + " WHERE " + KEY_ID + "=" + id;
         Cursor cursor = db.rawQuery(query, null);
-        String gsrString = "";
-        String gsrTimesString = "";
+
         if(cursor.moveToFirst()) {
-            gsrString = cursor.getString(cursor.getColumnIndex(KEY_GSR_ARRAY));
-            gsrTimesString = cursor.getString(cursor.getColumnIndex(KEY_GSR_TIMES));
-            for(int i = 0; i < gsr.length; i++) {
-                if(gsr[i] > 0) {
-                    gsrString += gsr[i]+",";
-                    gsrTimesString += gsrTimes[i]+",";
+            StringBuilder gsrBuilder = new StringBuilder(cursor.getString(cursor.getColumnIndex(KEY_GSR_ARRAY)));
+            StringBuilder gsrTimesBuilder = new StringBuilder(cursor.getString(cursor.getColumnIndex(KEY_GSR_TIMES)));
+            for (int i = 0; i < indexLength; i++) {
+                if (gsr[i] > 0) {
+                    if (i == indexLength - 1) {
+                        gsrBuilder.append(gsr[i]);
+                        gsrTimesBuilder.append(gsrTimes[i]);
+                    } else {
+                        gsrBuilder.append(gsr[i]).append(",");
+                        gsrTimesBuilder.append(gsrTimes[i]).append(",");
+                    }
                 }
             }
+            ContentValues values = new ContentValues();
+            values.put(KEY_GSR_ARRAY, gsrBuilder.toString());
+            values.put(KEY_GSR_TIMES, gsrTimesBuilder.toString());
         }
+    }
 
-        ContentValues values = new ContentValues();
-        values.put(KEY_GSR_ARRAY, gsrString);
-        values.put(KEY_GSR_TIMES, gsrTimesString);
+    public void appendHR(long id, int[] hr, long[] hrTimes) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        String query = "SELECT *" + " FROM " + TABLE_SESSIONS + " WHERE " + KEY_ID + "=" + id;
+        Cursor cursor = db.rawQuery(query, null);
 
-        return db.update(TABLE_SESSIONS, values, KEY_ID + " = ?", new String[] { String.valueOf(id) });
+        if(cursor.moveToFirst()) {
+            StringBuilder hrBuilder = new StringBuilder(cursor.getString(cursor.getColumnIndex(KEY_HR_ARRAY)));
+            StringBuilder hrTimesBuilder = new StringBuilder(cursor.getString(cursor.getColumnIndex(KEY_HR_TIMES)));
+            for(int i = 0; i < hr.length; i++) {
+                if(hr[i] > 0) {
+                    hrBuilder.append(hr[i]).append(",");
+                    hrTimesBuilder.append(hrTimes[i]).append(",");
+                }
+            }
+            ContentValues values = new ContentValues();
+            values.put(KEY_HR_ARRAY, hrBuilder.toString());
+            values.put(KEY_HR_TIMES, hrTimesBuilder.toString());
+            db.update(TABLE_SESSIONS, values, KEY_ID + " = ?", new String[]{String.valueOf(id)});
+        }
+    }
+
+    public void appendGsr(long id, int[] gsr, long[] gsrTimes) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        String query = "SELECT *" + " FROM " + TABLE_SESSIONS + " WHERE " + KEY_ID + "=" + id;
+        Cursor cursor = db.rawQuery(query, null);
+
+        if(cursor.moveToFirst()) {
+            StringBuilder gsrBuilder = new StringBuilder(cursor.getString(cursor.getColumnIndex(KEY_GSR_ARRAY)));
+            StringBuilder gsrTimesBuilder = new StringBuilder(cursor.getString(cursor.getColumnIndex(KEY_GSR_TIMES)));
+            for(int i = 0; i < gsr.length; i++) {
+                if(gsr[i] > 0) {
+                    gsrBuilder.append(gsr[i]).append(",");
+                    gsrTimesBuilder.append(gsrTimes[i]).append(",");
+                }
+            }
+            ContentValues values = new ContentValues();
+            values.put(KEY_GSR_ARRAY, gsrBuilder.toString());
+            values.put(KEY_GSR_TIMES, gsrTimesBuilder.toString());
+            db.update(TABLE_SESSIONS, values, KEY_ID + " = ?", new String[] { String.valueOf(id) });
+        }
     }
 }

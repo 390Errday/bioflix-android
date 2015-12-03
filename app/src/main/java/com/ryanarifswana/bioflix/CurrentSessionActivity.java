@@ -1,5 +1,7 @@
 package com.ryanarifswana.bioflix;
 
+import android.animation.ArgbEvaluator;
+import android.animation.ValueAnimator;
 import android.app.Activity;
 import android.content.ComponentName;
 import android.content.Context;
@@ -49,12 +51,6 @@ public class CurrentSessionActivity extends AppCompatActivity {
     CoordinatorLayout mainLayout;
     SimpleDateFormat timerFormat;
 
-    Animation fadeIn;
-    Animation fadeOut;
-    AnimationSet animation = new AnimationSet(false);
-    private int fadeOutTime;
-    private int fadeInTime = 50;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -83,17 +79,21 @@ public class CurrentSessionActivity extends AppCompatActivity {
         bindToService();
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        //Icon animations
-        fadeIn = new AlphaAnimation(0.4f, 1.0f);
-        fadeIn.setRepeatCount(Animation.INFINITE);
-        fadeOut = new AlphaAnimation(1.0f, 0.4f);
-        fadeOut.setRepeatCount(Animation.INFINITE);
-        fadeIn.setInterpolator(new DecelerateInterpolator());
-        fadeOut.setInterpolator(new AccelerateInterpolator());
-        fadeIn.setDuration(fadeInTime);
-        fadeOut.setStartOffset(fadeInTime);
-        animation.addAnimation(fadeIn);
-        animation.addAnimation(fadeOut);
+        ///
+        ImageView colorFrom = (ImageView) findViewById(R.id.heartIcon);
+        ImageView colorTo = (ImageView) findViewById(R.id.heartIcon2);
+        ValueAnimator colorAnimation = ValueAnimator.ofObject(new ArgbEvaluator(), colorFrom, colorTo);
+        colorAnimation.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+
+            @Override
+            public void onAnimationUpdate(ValueAnimator animator) {
+                //textView.setBackgroundColor((Integer) animator.getAnimatedValue());
+            }
+
+        });
+
+
+
     }
 
     @Override
@@ -156,19 +156,15 @@ public class CurrentSessionActivity extends AppCompatActivity {
             this.quality = hrBundle.getString(MSBandService.BUNDLE_HR_QUALITY);
         }
         public void run() {
-            fadeOutTime = calculateFadeOutTime(hr);
             if(quality.equals(HeartRateQuality.ACQUIRING.toString())) {
                 hrLocked = false;
                 doNotLocked();
             }
             else if(quality.equals("LOCKED") && !hrLocked) {
                 hrLocked = true;
-                fadeOut.setDuration(fadeOutTime);
-                heartIcon.startAnimation(animation);
                 doLocked();
             }
             if(hrLocked) {
-                fadeOut.setDuration(fadeOutTime);
                 hrRateView.setText(""+hr);
             }
             else{
@@ -178,9 +174,9 @@ public class CurrentSessionActivity extends AppCompatActivity {
         }
     }
 
-    private int calculateFadeOutTime(int hr) {
-        return (60000 - (fadeInTime * 60)) / hr;
-    }
+//    private int calculateFadeOutTime(int hr) {
+//        return (60000 - (fadeInTime * 60)) / hr;
+//    }
 
     class UpdateGSR implements Runnable {
         int updatedGSR;

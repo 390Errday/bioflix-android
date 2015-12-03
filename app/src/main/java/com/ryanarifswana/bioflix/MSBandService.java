@@ -119,9 +119,11 @@ public class MSBandService extends Service {
     }
 
     public static void stopSession() {
+        inSession = false;
+        db.concludeHr(sessionId, hrArray, hrTimeArray, hrIndex);
+        db.concludeGsr(sessionId, gsrArray, gsrTimeArray, gsrIndex);
         db.endSession(sessionId, System.currentTimeMillis());
         handler.removeCallbacksAndMessages(null);
-        inSession = false;
     }
 
     public void startHeartRate() {
@@ -141,7 +143,7 @@ public class MSBandService extends Service {
         hrArray[hrIndex] = bundle.getInt(BUNDLE_HR_HR);
         hrTimeArray[hrIndex] = getElapsedTime();
         if(hrIndex == HRBUFFER - 1) {
-            db.appenHR(sessionId, hrArray, hrTimeArray);
+            db.appendHR(sessionId, hrArray, hrTimeArray);
             hrArray = new int[HRBUFFER];
             hrTimeArray = new long[HRBUFFER];
             hrIndex = 0;
@@ -155,7 +157,7 @@ public class MSBandService extends Service {
         gsrArray[gsrIndex] = bundle.getInt(BUNDLE_GSR_RESISTANCE);
         gsrTimeArray[gsrIndex] = getElapsedTime();
         if(gsrIndex == GSRBUFFER - 1) {
-            db.appenGsr(sessionId, gsrArray, gsrTimeArray);
+            db.appendGsr(sessionId, gsrArray, gsrTimeArray);
             gsrArray = new int[GSRBUFFER];
             gsrTimeArray = new long[GSRBUFFER];
             gsrIndex = 0;
