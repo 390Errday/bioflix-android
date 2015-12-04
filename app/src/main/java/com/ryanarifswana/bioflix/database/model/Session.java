@@ -10,13 +10,37 @@ public class Session {
     private long startTime;
     private long endTime;
     private boolean complete;
-    private int[] hrArray;
-    private long[] hrTimes;
-    private int[] gsrArray;
-    private long[] gsrTimes;
+    private String hrArray;
+    private String hrTimes;
+    private String gsrArray;
+    private String gsrTimes;
 
     public Session() {
         complete = false;
+    }
+
+    public Session(
+            long id,
+            String movieName,
+            String viewerName,
+            long startTime,
+            long endTime,
+            int complete,
+            String hrArray,
+            String hrTimes,
+            String gsrArray,
+            String gsrTimes) {
+
+        this.id = id;
+        this.movieName = movieName;
+        this.viewerName = viewerName;
+        this.startTime = startTime;
+        this.endTime = endTime;
+        this.complete = (complete == 1) ? true : false;
+        this.hrArray = hrArray;
+        this.hrTimes = hrTimes;
+        this.gsrArray = gsrArray;
+        this.gsrTimes = gsrTimes;
     }
 
     public Session(String movieName, String viewerName, long startTime) {
@@ -41,16 +65,16 @@ public class Session {
     public long getEndTime() {
         return endTime;
     }
-    public int[] getHrArray() {
+    public String getHrArray() {
         return hrArray;
     }
-    public long[] getHrTimes() {
+    public String getHrTimes() {
         return hrTimes;
     }
-    public int[] getGsrArray() {
+    public String getGsrArray() {
         return gsrArray;
     }
-    public long[] getGsrTimes() {
+    public String getGsrTimes() {
         return gsrTimes;
     }
 
@@ -82,19 +106,19 @@ public class Session {
         this.complete = complete;
     }
 
-    public void setHrArray(int[] hrArray) {
+    public void setHrArray(String hrArray) {
         this.hrArray = hrArray;
     }
 
-    public void setHrTimes(long[] hrTimes) {
+    public void setHrTimes(String hrTimes) {
         this.hrTimes = hrTimes;
     }
 
-    public void setGsrArray(int[] gsrArray) {
+    public void setGsrArray(String gsrArray) {
         this.gsrArray = gsrArray;
     }
 
-    public void setGsrTimes(long[] gsrTimes) {
+    public void setGsrTimes(String gsrTimes) {
         this.gsrTimes = gsrTimes;
     }
 }

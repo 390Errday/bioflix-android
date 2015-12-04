@@ -118,33 +118,63 @@ public class DatabaseHandler extends SQLiteOpenHelper{
         return sessionList;
     }
 
+    public Session getSession(long id) {
+        Log.d("getSession", "called");
+        Session session = null;
+        SQLiteDatabase db = this.getWritableDatabase();
+        String query = "SELECT *" + " FROM " + TABLE_SESSIONS + " WHERE " + KEY_ID + "=" + id;
+        Cursor cursor = db.rawQuery(query, null);
+        if(cursor.moveToFirst()) {
+            session = new Session(
+                    cursor.getLong(cursor.getColumnIndex(KEY_ID)),
+                    cursor.getString(cursor.getColumnIndex(KEY_MOVIE_NAME)),
+                    cursor.getString(cursor.getColumnIndex(KEY_VIEWER_NAME)),
+                    cursor.getLong(cursor.getColumnIndex(KEY_START_TIME)),
+                    cursor.getLong(cursor.getColumnIndex(KEY_END_TIME)),
+                    cursor.getInt(cursor.getColumnIndex(KEY_COMPLETE)),
+                    cursor.getString(cursor.getColumnIndex(KEY_HR_ARRAY)),
+                    cursor.getString(cursor.getColumnIndex(KEY_HR_TIMES)),
+                    cursor.getString(cursor.getColumnIndex(KEY_GSR_ARRAY)),
+                    cursor.getString(cursor.getColumnIndex(KEY_GSR_TIMES))
+            );
+        }
+        Log.d("getSession", "returning");
+        return session;
+    }
+
     public void concludeHr(long id, int[] hr, long[] hrTimes, int indexLength) {
+        Log.d("conculdeHr", "called");
         SQLiteDatabase db = this.getWritableDatabase();
         String query = "SELECT *" + " FROM " + TABLE_SESSIONS + " WHERE " + KEY_ID + "=" + id;
         Cursor cursor = db.rawQuery(query, null);
 
-        if(cursor.moveToFirst()) {
+        if (cursor.moveToFirst()) {
             StringBuilder hrBuilder = new StringBuilder(cursor.getString(cursor.getColumnIndex(KEY_HR_ARRAY)));
             StringBuilder hrTimesBuilder = new StringBuilder(cursor.getString(cursor.getColumnIndex(KEY_HR_TIMES)));
-            for(int i = 0; i < indexLength; i++) {
-                if(hr[i] > 0) {
-                    if(i == indexLength - 1) {
+            for (int i = 0; i < indexLength; i++) {
+                if (hr[i] > 0) {
+                    if (i == indexLength - 1) {
                         hrBuilder.append(hr[i]);
                         hrTimesBuilder.append(hrTimes[i]);
-                    }
-                    else {
+                    } else {
                         hrBuilder.append(hr[i]).append(",");
-                        hrBuilder.append(hrTimes[i]).append(",");
+                        hrTimesBuilder.append(hrTimes[i]).append(",");
                     }
                 }
             }
             ContentValues values = new ContentValues();
+            Log.d("***HR_ARRAY_LENGTH_s", "" + hrBuilder.toString());
+            Log.d("***HR_TIMES_LENGTH_s", "" + hrTimesBuilder.toString());
+            Log.d("***HR_ARRAY_LENGTH", "" + hrBuilder.toString().split(",").length);
+            Log.d("***HR_TIMES_LENGTH", "" + hrTimesBuilder.toString().split(",").length);
             values.put(KEY_HR_ARRAY, hrBuilder.toString());
             values.put(KEY_HR_TIMES, hrTimesBuilder.toString());
+            Log.d("conculdeHr", "finished");
         }
     }
 
     public void concludeGsr(long id, int[] gsr, long[] gsrTimes, int indexLength) {
+        Log.d("conculdeGsr", "called");
         SQLiteDatabase db = this.getWritableDatabase();
         String query = "SELECT *" + " FROM " + TABLE_SESSIONS + " WHERE " + KEY_ID + "=" + id;
         Cursor cursor = db.rawQuery(query, null);
@@ -164,8 +194,13 @@ public class DatabaseHandler extends SQLiteOpenHelper{
                 }
             }
             ContentValues values = new ContentValues();
+            Log.d("***GSR_ARRAY_LENGTH_s", "" + gsrBuilder.toString());
+            Log.d("***GSR_TIMES_LENGTH_s", "" + gsrTimesBuilder.toString());
+            Log.d("***GSR_ARRAY_LENGTH", "" + gsrBuilder.toString().split(",").length);
+            Log.d("***GSR_TIMES_LENGTH", "" + gsrTimesBuilder.toString().split(",").length);
             values.put(KEY_GSR_ARRAY, gsrBuilder.toString());
             values.put(KEY_GSR_TIMES, gsrTimesBuilder.toString());
+            Log.d("conculdeGsr", "finished");
         }
     }
 
@@ -207,7 +242,7 @@ public class DatabaseHandler extends SQLiteOpenHelper{
             ContentValues values = new ContentValues();
             values.put(KEY_GSR_ARRAY, gsrBuilder.toString());
             values.put(KEY_GSR_TIMES, gsrTimesBuilder.toString());
-            db.update(TABLE_SESSIONS, values, KEY_ID + " = ?", new String[] { String.valueOf(id) });
+            db.update(TABLE_SESSIONS, values, KEY_ID + " = ?", new String[]{String.valueOf(id)});
         }
     }
 }

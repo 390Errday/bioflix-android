@@ -36,6 +36,7 @@ import java.lang.ref.WeakReference;
 
 public class MSBandService extends Service {
     static MSBandService bandService = null;
+    private static ServerComm apiClient;
     private static BandClient client;
     public final static int MSG_ERROR = 0;
     public final static int MSG_BAND_NOT_REGISTERED = 1;
@@ -148,12 +149,10 @@ public class MSBandService extends Service {
         db.concludeHr(sessionId, hrArray, hrTimeArray, hrIndex);
         db.concludeGsr(sessionId, gsrArray, gsrTimeArray, gsrIndex);
         db.endSession(sessionId, System.currentTimeMillis());
+        Session session = db.getSession(sessionId);
+        apiClient = new ServerComm(baseContext);
+        apiClient.postSession(session);
         handler.removeCallbacksAndMessages(null);
-    }
-
-    public static void startHeartRate() {
-        log("startHeartRate() called");
-        new HeartRateSubscriptionTask().execute();
     }
 
     public static void startRates() {
@@ -171,6 +170,11 @@ public class MSBandService extends Service {
                 log(e.getMessage());
             }
         }
+    }
+
+    public static void startHeartRate() {
+        log("startHeartRate() called");
+        new HeartRateSubscriptionTask().execute();
     }
 
     public static void startGsr() {
@@ -236,7 +240,7 @@ public class MSBandService extends Service {
         @Override
         public void onBandHeartRateChanged(final BandHeartRateEvent event) {
             if (event != null) {
-                log("HR tick: " + event.getHeartRate());
+            //  log("HR tick: " + event.getHeartRate());
                 hrBundle.clear();
                 hrBundle.putInt(BUNDLE_HR_HR, event.getHeartRate());
                 hrBundle.putString(BUNDLE_HR_QUALITY, event.getQuality().toString());
