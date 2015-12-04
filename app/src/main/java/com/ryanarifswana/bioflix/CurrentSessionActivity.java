@@ -1,13 +1,10 @@
 package com.ryanarifswana.bioflix;
 
-import android.animation.ArgbEvaluator;
-import android.animation.ValueAnimator;
 import android.app.Activity;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
-import android.media.Image;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
@@ -18,16 +15,9 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
-import android.view.animation.AccelerateInterpolator;
-import android.view.animation.AlphaAnimation;
-import android.view.animation.Animation;
-import android.view.animation.AnimationSet;
-import android.view.animation.DecelerateInterpolator;
 import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.microsoft.band.BandException;
 import com.microsoft.band.sensors.HeartRateQuality;
 
 import java.lang.ref.WeakReference;
@@ -43,7 +33,6 @@ public class CurrentSessionActivity extends AppCompatActivity {
     private TextView timer;
     private TextView warningText;
     private Button startSessionButton;
-    private ImageView heartIcon;
     MSBandService bandService;
     BandResultsReceiver resultsReceiver;
     boolean serviceBound = false;
@@ -67,7 +56,6 @@ public class CurrentSessionActivity extends AppCompatActivity {
         timer = (TextView) findViewById(R.id.timer);
         warningText = (TextView) findViewById(R.id.warningText);
         startSessionButton = (Button) findViewById(R.id.startButton);
-        heartIcon = (ImageView) findViewById(R.id.heartIcon);
         warningText.setVisibility(View.INVISIBLE);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -76,61 +64,41 @@ public class CurrentSessionActivity extends AppCompatActivity {
 
         timerFormat = new SimpleDateFormat("HH:mm:ss");
         timerFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
-
         bindToService();
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
-        ///
-        ImageView colorFrom = (ImageView) findViewById(R.id.heartIcon);
-        ImageView colorTo = (ImageView) findViewById(R.id.heartIcon2);
-        ValueAnimator colorAnimation = ValueAnimator.ofObject(new ArgbEvaluator(), colorFrom, colorTo);
-        colorAnimation.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-
-            @Override
-            public void onAnimationUpdate(ValueAnimator animator) {
-                //textView.setBackgroundColor((Integer) animator.getAnimatedValue());
-            }
-
-        });
-
-
-
     }
 
     @Override
     public void onPause() {
-        Log.d("onPause", "called");
-        if(!MSBandService.inSession) {
+        log("onPause() called");
+        if (!MSBandService.inSession && serviceBound) {
             MSBandService.stopRates();
-            this.unbindService(bandConnection);
         }
         super.onPause();
     }
 
     @Override
     public void onResume() {
-        if(!MSBandService.inSession) {
-            bindToService();
-        }
+        log("onResume() called");
         super.onResume();
+        if (!MSBandService.inSession && serviceBound) {
+            MSBandService.startRates();
+        }
     }
 
-    @Override
-    protected void onDestroy() {
-        Log.d("onDestroyed", "called");
-        MSBandService.stopRates();
-        super.onDestroy();
-        finish();
-    }
+//    @Override
+//    protected void onDestroy() {
+//        log("onDestroy() called");
+//        super.onDestroy();
+//        finish();
+//    }
 
     private void bindToService() {
-        if(!serviceBound) {
-            Log.d("binding", "binding");
+        log("bindToService() called");
+        if (!serviceBound) {
+            log("Binding to service...");
             resultsReceiver = new BandResultsReceiver(null);
             Intent intent = new Intent(this, MSBandService.class);
-            intent.putExtra("receiver", resultsReceiver);
-            intent.putExtra("movieName", movieName);
-            intent.putExtra("viewerName", viewerName);
             this.bindService(intent, bandConnection, Context.BIND_AUTO_CREATE);
         }
     }
@@ -142,7 +110,7 @@ public class CurrentSessionActivity extends AppCompatActivity {
             startSessionButton.setText("Start Session");
         }
         else {
-            MSBandService.startSession();
+            MSBandService.startSession(movieName, viewerName);
             startSessionButton.setText("Stop Session");
         }
 
@@ -229,19 +197,21 @@ public class CurrentSessionActivity extends AppCompatActivity {
     private ServiceConnection bandConnection = new ServiceConnection() {
 
         @Override
-        public void onServiceConnected(ComponentName className,
-                                       IBinder service) {
+        public void onServiceConnected(ComponentName className, IBinder service) {
+            log("Bound to service.");
             // We've bound to LocalService, cast the IBinder and get LocalService instance
             MSBandService.LocalBinder binder = (MSBandService.LocalBinder) service;
             bandService = binder.getService();
-            bandService.startHeartRate();
-            bandService.startGsr();
+            Intent intent = new Intent(currentSessionActivity, MSBandService.class);
+            intent.putExtra("receiver", resultsReceiver);
+            log("Starting service...");
+            bandService.startService(intent);
             serviceBound = true;
         }
 
         @Override
         public void onServiceDisconnected(ComponentName arg0) {
-            Log.d("CURRENT SESSION:", "UNBOUND FROM SERVICE");
+            log("Unbound from service");
             serviceBound = false;
         }
     };
@@ -272,5 +242,9 @@ public class CurrentSessionActivity extends AppCompatActivity {
                     break;
             }
         }
+    }
+
+    private void log(String log) {
+        Log.d("CurrentSessionActivity", log);
     }
 }

@@ -9,7 +9,7 @@
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:showIn="@layout/activity_current_session"
     tools:context="com.ryanarifswana.bioflix.CurrentSessionActivity"
-    android:background="@color/colorPrimaryDarkest">
+    android:background="@color/colorPrimaryLightest">
 
     <Space
         android:layout_width="fill_parent"
@@ -82,24 +82,6 @@
                     android:elegantTextHeight="false"
                     android:enabled="false" />
 
-                <ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/heartIcon"
-                    android:src="@drawable/ic_favorite_red_300_24dp"
-                    android:layout_gravity="center_horizontal|bottom"
-                    android:layout_marginBottom="10dp"
-                    android:contentDescription="Heart Rate" />
-
-                <ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/heartIcon2"
-                    android:src="@drawable/ic_favorite_red_100_24dp"
-                    android:layout_gravity="center_horizontal|bottom"
-                    android:layout_marginBottom="10dp"
-                    android:contentDescription="Heart Rate" />
-
             </FrameLayout>
 
             <FrameLayout
@@ -142,7 +124,7 @@
         android:id="@+id/warningText"
         android:layout_centerHorizontal="true"
         android:layout_below="@+id/linearLayout"
-        android:textColor="@color/colorAccentLightest"
+        android:textColor="@color/colorAccent2Dark"
         android:textSize="16sp" />
 
     <Button
@@ -152,8 +134,8 @@
         android:id="@+id/startButton"
         android:onClick="startButton"
         android:layout_gravity="center_horizontal"
-        android:background="@color/ripple_material_dark"
-        android:textColor="@color/primary_material_light"
+        android:background="@color/colorPrimary"
+        android:textColor="@color/colorPrimaryLightest"
         android:paddingLeft="8dp"
         android:paddingRight="8dp"
         android:layout_below="@+id/warningText"

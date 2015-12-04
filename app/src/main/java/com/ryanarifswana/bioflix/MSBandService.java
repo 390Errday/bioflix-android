@@ -3,6 +3,7 @@ package com.ryanarifswana.bioflix;
 
 import android.app.Activity;
 import android.app.Service;
+import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Binder;
@@ -19,6 +20,7 @@ import android.widget.Chronometer;
 import com.microsoft.band.BandClient;
 import com.microsoft.band.BandClientManager;
 import com.microsoft.band.BandException;
+import com.microsoft.band.BandIOException;
 import com.microsoft.band.BandInfo;
 import com.microsoft.band.ConnectionState;
 import com.microsoft.band.UserConsent;
@@ -73,6 +75,7 @@ public class MSBandService extends Service {
     private static Bundle errBundle;
     private static DatabaseHandler db;
     private static Handler handler;
+    private static Context baseContext;
 
     public class LocalBinder extends Binder {
         MSBandService getService() {
@@ -82,28 +85,46 @@ public class MSBandService extends Service {
 
     @Override
     public IBinder onBind(Intent intent) {
+        log("onBind() called");
         db = new DatabaseHandler(this);
         bandService = this;
-        resultReceiver = intent.getParcelableExtra("receiver");
-        sessionMovieName =intent.getStringExtra("movieName");
-        sessionViewerName =  intent.getStringExtra("viewerName");
+        inSession = false;
         hrBundle = new Bundle();
         gsrBundle = new Bundle();
         timerBundle = new Bundle();
         errBundle = new Bundle();
-        hrArray = new int[HR_BUFFER];
-        hrTimeArray = new long[HR_BUFFER];
-        gsrArray = new int[GSR_BUFFER];
-        gsrTimeArray = new long[GSR_BUFFER];
-        hrIndex = 0;
-        gsrIndex = 0;
-        inSession = false;
         handler = new Handler();
+        baseContext = getBaseContext();
         return mBinder;
     }
 
-    public static void startSession() {
-        if(!inSession) {
+    @Override
+    public int onStartCommand (Intent intent, int flags, int startId) {
+        log("onStartCommand() called");
+        if(intent != null) {
+            resultReceiver = intent.getParcelableExtra("receiver");
+            startHeartRate();
+            startGsr();
+        }
+        return START_STICKY;
+    }
+
+//    @Override
+//    public void onDestroy() {
+//        log("onDestroy() called");
+//    }
+
+    public static void startSession(String movieName, String viewerName) {
+        log("startSession() called");
+        if (!inSession) {
+            sessionMovieName = movieName;
+            sessionViewerName = viewerName;
+            hrArray = new int[HR_BUFFER];
+            hrTimeArray = new long[HR_BUFFER];
+            gsrArray = new int[GSR_BUFFER];
+            gsrTimeArray = new long[GSR_BUFFER];
+            hrIndex = 0;
+            gsrIndex = 0;
             sessionId = db.newSession(sessionMovieName, sessionViewerName, System.currentTimeMillis());
             baseTime = System.currentTimeMillis();
             inSession = true;
@@ -122,6 +143,7 @@ public class MSBandService extends Service {
     }
 
     public static void stopSession() {
+        log("stopSession() called");
         inSession = false;
         db.concludeHr(sessionId, hrArray, hrTimeArray, hrIndex);
         db.concludeGsr(sessionId, gsrArray, gsrTimeArray, gsrIndex);
@@ -129,34 +151,39 @@ public class MSBandService extends Service {
         handler.removeCallbacksAndMessages(null);
     }
 
-    public void startHeartRate() {
+    public static void startHeartRate() {
+        log("startHeartRate() called");
         new HeartRateSubscriptionTask().execute();
     }
 
+    public static void startRates() {
+        log("startRate() called");
+        startHeartRate();
+        startGsr();
+    }
+
     public static void stopRates() {
+        log("stopRate() called");
         if (client != null) {
             try {
-                client.disconnect().await();
-            } catch (InterruptedException e) {
-                Log.e("stopRates:", e.getMessage());
-            } catch (BandException e) {
-                Log.e("stopRates:", e.getMessage());
+                client.getSensorManager().unregisterAllListeners();
+            } catch (BandIOException e) {
+                log(e.getMessage());
             }
         }
     }
 
-    public void startGsr() {
+    public static void startGsr() {
+        log("startGsr() called");
         new GsrSubscriptionTask().execute();
     }
-
-
 
     public void requestConsent(WeakReference<Activity> reference) {
         Log.d("Consent received", "True!!");
         new HeartRateConsentTask().execute(reference);
     }
 
-    public void addHr(Bundle bundle) {
+    public static void addHr(Bundle bundle) {
         hrArray[hrIndex] = bundle.getInt(BUNDLE_HR_HR);
         hrTimeArray[hrIndex] = getElapsedTime();
         if(hrIndex == HR_BUFFER - 1) {
@@ -170,7 +197,7 @@ public class MSBandService extends Service {
         }
     }
 
-    public void addGsr(Bundle bundle) {
+    public static void addGsr(Bundle bundle) {
         gsrArray[gsrIndex] = bundle.getInt(BUNDLE_GSR_RESISTANCE);
         gsrTimeArray[gsrIndex] = getElapsedTime();
         if(gsrIndex == GSR_BUFFER - 1) {
@@ -184,7 +211,7 @@ public class MSBandService extends Service {
         }
     }
 
-    public void sendError(String error) {
+    public static void sendError(String error) {
         errBundle.clear();
         errBundle.putString(BUNDLE_ERROR_TEXT, error);
         resultReceiver.send(MSG_ERROR, errBundle);
@@ -205,20 +232,21 @@ public class MSBandService extends Service {
         }, 1000);
     }
 
-    private BandHeartRateEventListener mHeartRateEventListener = new BandHeartRateEventListener() {
+    private static BandHeartRateEventListener mHeartRateEventListener = new BandHeartRateEventListener() {
         @Override
         public void onBandHeartRateChanged(final BandHeartRateEvent event) {
             if (event != null) {
+                log("HR tick: " + event.getHeartRate());
                 hrBundle.clear();
                 hrBundle.putInt(BUNDLE_HR_HR, event.getHeartRate());
                 hrBundle.putString(BUNDLE_HR_QUALITY, event.getQuality().toString());
                 resultReceiver.send(MSG_HR_TICK, hrBundle);
-                if(inSession) addHr(hrBundle);
+                if (inSession) addHr(hrBundle);
             }
         }
     };
 
-    private BandGsrEventListener mGsrEventListener = new BandGsrEventListener() {
+    private static BandGsrEventListener mGsrEventListener = new BandGsrEventListener() {
         @Override
         public void onBandGsrChanged(final BandGsrEvent event) {
             if (event != null) {
@@ -230,14 +258,14 @@ public class MSBandService extends Service {
         }
     };
 
-    private boolean getConnectedBandClient() throws InterruptedException, BandException {
+    private static boolean getConnectedBandClient() throws InterruptedException, BandException {
         if (client == null) {
             BandInfo[] devices = BandClientManager.getInstance().getPairedBands();
             if (devices.length == 0) {
                 sendError("Band isn't paired with your phone.\n");
                 return false;
             }
-            client = BandClientManager.getInstance().create(getBaseContext(), devices[0]);
+            client = BandClientManager.getInstance().create(baseContext, devices[0]);
         } else if (ConnectionState.CONNECTED == client.getConnectionState()) {
             return true;
         }
@@ -246,7 +274,7 @@ public class MSBandService extends Service {
         return ConnectionState.CONNECTED == client.connect().await();
     }
 
-    private class GsrSubscriptionTask extends AsyncTask<Void, Void, Void> {
+    private static class GsrSubscriptionTask extends AsyncTask<Void, Void, Void> {
         @Override
         protected Void doInBackground(Void... params) {
             try {
@@ -283,7 +311,7 @@ public class MSBandService extends Service {
         }
     }
 
-    private class HeartRateSubscriptionTask extends AsyncTask<Void, Void, Void> {
+    private static class HeartRateSubscriptionTask extends AsyncTask<Void, Void, Void> {
         @Override
         protected Void doInBackground(Void... params) {
             try {
@@ -357,5 +385,9 @@ public class MSBandService extends Service {
             }
             return null;
         }
+    }
+
+    private static void log(String log) {
+        Log.d("MSBandService", log);
     }
 }

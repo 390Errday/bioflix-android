@@ -5,11 +5,15 @@
       <config />
     </shared>
   </component>
+  <component name="AndroidLogFilters">
+    <option name="TOOL_WINDOW_CONFIGURED_FILTER" value="Show only selected application" />
+  </component>
   <component name="ChangeListManager">
     <list default="true" id="02c3d107-b74c-4cb8-8d23-ef21c6b04eb0" name="Default" comment="">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/java/com/ryanarifswana/bioflix/CurrentSessionActivity.java" afterPath="$PROJECT_DIR$/app/src/main/java/com/ryanarifswana/bioflix/CurrentSessionActivity.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/java/com/ryanarifswana/bioflix/MSBandService.java" afterPath="$PROJECT_DIR$/app/src/main/java/com/ryanarifswana/bioflix/MSBandService.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/misc.xml" afterPath="$PROJECT_DIR$/.idea/misc.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/java/com/ryanarifswana/bioflix/MainActivity.java" afterPath="$PROJECT_DIR$/app/src/main/java/com/ryanarifswana/bioflix/MainActivity.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/res/layout/content_current_session.xml" afterPath="$PROJECT_DIR$/app/src/main/res/layout/content_current_session.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
     <ignored path="bioflix-android.iws" />
@@ -35,21 +39,29 @@
         <entry file="file://$PROJECT_DIR$/app/src/main/java/com/ryanarifswana/bioflix/MSBandService.java">
           <provider selected="true" editor-type-id="text-editor">
             <state vertical-scroll-proportion="0.0">
-              <caret line="142" column="52" selection-start-line="142" selection-start-column="52" selection-end-line="142" selection-end-column="52" />
+              <caret line="103" column="0" selection-start-line="103" selection-start-column="0" selection-end-line="103" selection-end-column="0" />
               <folding>
                 <element signature="class#LocalBinder#0;class#MSBandService#0" expanded="false" />
+                <element signature="method#onBind#0;class#MSBandService#0" expanded="false" />
                 <element signature="method#startSession#0;class#MSBandService#0" expanded="false" />
                 <element signature="method#continueSession#0;class#MSBandService#0" expanded="false" />
                 <element signature="method#stopSession#0;class#MSBandService#0" expanded="false" />
-                <element signature="e#4456#4457#0" expanded="true" />
-                <element signature="e#4513#4514#0" expanded="true" />
-                <element signature="e#4897#4898#0" expanded="true" />
-                <element signature="e#4948#4949#0" expanded="true" />
+                <element signature="method#startHeartRate#0;class#MSBandService#0" expanded="false" />
+                <element signature="method#startRates#0;class#MSBandService#0" expanded="false" />
+                <element signature="method#stopRates#0;class#MSBandService#0" expanded="false" />
+                <element signature="method#startGsr#0;class#MSBandService#0" expanded="false" />
                 <element signature="method#requestConsent#0;class#MSBandService#0" expanded="false" />
                 <element signature="method#addHr#0;class#MSBandService#0" expanded="false" />
                 <element signature="method#addGsr#0;class#MSBandService#0" expanded="false" />
                 <element signature="method#sendError#0;class#MSBandService#0" expanded="false" />
                 <element signature="method#startTimer#0;class#MSBandService#0" expanded="false" />
+                <element signature="method#getConnectedBandClient#0;class#MSBandService#0" expanded="false" />
+                <element signature="class#HeartRateSubscriptionTask#0;class#MSBandService#0" expanded="false" />
+                <element signature="method#doInBackground#0;class#HeartRateSubscriptionTask#0;class#MSBandService#0" expanded="false" />
+                <element signature="class#HeartRateConsentTask#0;class#MSBandService#0" expanded="false" />
+                <element signature="method#doInBackground#0;class#HeartRateConsentTask#0;class#MSBandService#0" expanded="false" />
+                <element signature="e#14712#14713#0" expanded="true" />
+                <element signature="e#14755#14756#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -58,20 +70,25 @@
       <file leaf-file-name="CurrentSessionActivity.java" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/app/src/main/java/com/ryanarifswana/bioflix/CurrentSessionActivity.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.061251663">
-              <caret line="112" column="28" selection-start-line="112" selection-start-column="28" selection-end-line="112" selection-end-column="28" />
+            <state vertical-scroll-proportion="2.057257">
+              <caret line="103" column="5" selection-start-line="103" selection-start-column="5" selection-end-line="103" selection-end-column="5" />
               <folding>
-                <element signature="method#doNotLocked#0;class#CurrentSessionActivity#0" expanded="false" />
-                <element signature="method#doLocked#0;class#CurrentSessionActivity#0" expanded="false" />
-                <element signature="class#UpdateHr#0;class#CurrentSessionActivity#0" expanded="false" />
-                <element signature="method#UpdateHr#0;class#UpdateHr#0;class#CurrentSessionActivity#0" expanded="false" />
-                <element signature="method#run#0;class#UpdateHr#0;class#CurrentSessionActivity#0" expanded="false" />
-                <element signature="class#UpdateGSR#0;class#CurrentSessionActivity#0" expanded="false" />
-                <element signature="class#UpdateTimer#0;class#CurrentSessionActivity#0" expanded="false" />
-                <element signature="method#showRegisterBandSnackbar#0;class#CurrentSessionActivity#0" expanded="false" />
-                <element signature="docComment;field#bandConnection#0;class#CurrentSessionActivity#0" expanded="false" />
-                <element signature="class#BandResultsReceiver#0;class#CurrentSessionActivity#0" expanded="false" />
-                <element signature="method#onReceiveResult#0;class#BandResultsReceiver#0;class#CurrentSessionActivity#0" expanded="false" />
+                <element signature="imports" expanded="true" />
+                <element signature="e#5157#5158#0" expanded="true" />
+                <element signature="e#5209#5210#0" expanded="true" />
+                <element signature="e#5237#5238#0" expanded="true" />
+                <element signature="e#5312#5313#0" expanded="true" />
+                <element signature="e#5437#5438#0" expanded="true" />
+                <element signature="e#5491#5492#0" expanded="true" />
+                <element signature="e#5519#5520#0" expanded="true" />
+                <element signature="e#5599#5600#0" expanded="true" />
+                <element signature="e#5836#6145#0" expanded="true" />
+                <element signature="e#6019#6029#0" expanded="true" />
+                <element signature="e#6144#6145#0" expanded="true" />
+                <element signature="e#7284#7285#0" expanded="true" />
+                <element signature="e#7322#7323#0" expanded="true" />
+                <element signature="e#8324#8325#0" expanded="true" />
+                <element signature="e#8376#8377#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -81,7 +98,7 @@
         <entry file="file://$PROJECT_DIR$/app/src/main/java/com/ryanarifswana/bioflix/database/DatabaseHandler.java">
           <provider selected="true" editor-type-id="text-editor">
             <state vertical-scroll-proportion="0.0">
-              <caret line="192" column="22" selection-start-line="192" selection-start-column="22" selection-end-line="192" selection-end-column="22" />
+              <caret line="63" column="0" selection-start-line="63" selection-start-column="0" selection-end-line="63" selection-end-column="0" />
               <folding />
             </state>
           </provider>
@@ -1544,11 +1561,11 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
+        <option value="$PROJECT_DIR$/app/src/main/java/com/ryanarifswana/bioflix/database/DatabaseHandler.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/ryanarifswana/bioflix/MainActivity.java" />
         <option value="$PROJECT_DIR$/app/src/main/res/layout/content_current_session.xml" />
-        <option value="$PROJECT_DIR$/app/src/main/java/com/ryanarifswana/bioflix/database/DatabaseHandler.java" />
-        <option value="$PROJECT_DIR$/app/src/main/java/com/ryanarifswana/bioflix/MSBandService.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/ryanarifswana/bioflix/CurrentSessionActivity.java" />
+        <option value="$PROJECT_DIR$/app/src/main/java/com/ryanarifswana/bioflix/MSBandService.java" />
       </list>
     </option>
   </component>
@@ -1699,6 +1716,8 @@
     <property name="settings.editor.splitter.proportion" value="0.2" />
     <property name="recentsLimit" value="5" />
     <property name="FullScreen" value="true" />
+    <property name="ANDROID_EXTENDED_DEVICE_CHOOSER_SERIALS" value="ZX1G223SKN" />
+    <property name="ANDROID_EXTENDED_DEVICE_CHOOSER_AVD" value="Nexus_5_API_22" />
   </component>
   <component name="RunManager" selected="Android Application.app">
     <configuration default="true" type="AndroidRunConfigurationType" factoryName="Android Application">
@@ -1848,7 +1867,7 @@
       <option name="DEPLOY" value="true" />
       <option name="ARTIFACT_NAME" value="" />
       <option name="TARGET_SELECTION_MODE" value="SHOW_DIALOG" />
-      <option name="USE_LAST_SELECTED_DEVICE" value="false" />
+      <option name="USE_LAST_SELECTED_DEVICE" value="true" />
       <option name="PREFERRED_AVD" value="" />
       <option name="USE_COMMAND_LINE" value="true" />
       <option name="COMMAND_LINE" value="" />
@@ -1902,32 +1921,32 @@
     <editor active="true" />
     <layout>
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
-      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
+      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3287841" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
       <window_info id="Palette&#9;" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
       <window_info id="Build Variants" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="-1" side_tool="true" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="-1" side_tool="true" content_ui="tabs" />
       <window_info id="Application Servers" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
       <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
-      <window_info id="Android Monitor" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
+      <window_info id="Android Monitor" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.7605459" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
       <window_info id="Captures" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3297568" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
       <window_info id="Gradle Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="-1" side_tool="true" content_ui="tabs" />
       <window_info id="Designer" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.20171674" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.20457797" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="Gradle" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="-1" side_tool="true" content_ui="tabs" />
       <window_info id="Android Model" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="-1" side_tool="true" content_ui="tabs" />
+      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="SLIDING" type="SLIDING" visible="false" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
-      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
     </layout>
   </component>
   <component name="VcsContentAnnotationSettings">
@@ -1935,11 +1954,68 @@
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
-      <option name="time" value="7" />
+      <option name="time" value="14" />
     </breakpoint-manager>
     <watches-manager />
   </component>
   <component name="editorHistoryManager">
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/ryanarifswana/bioflix/NewSessionActivity.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="20" column="13" selection-start-line="20" selection-start-column="13" selection-end-line="20" selection-end-column="13" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/content_main.xml">
+      <provider editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+      <provider selected="true" editor-type-id="android-designer">
+        <state />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/content_new_session.xml">
+      <provider editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+      <provider selected="true" editor-type-id="android-designer">
+        <state />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/activity_current_session.xml">
+      <provider editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+      <provider selected="true" editor-type-id="android-designer">
+        <state />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/ryanarifswana/bioflix/MovieRecyclerAdapter.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="1.1111112">
+          <caret line="54" column="56" selection-start-line="54" selection-start-column="56" selection-end-line="54" selection-end-column="56" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/ryanarifswana/bioflix/MainActivity.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="117" column="22" selection-start-line="117" selection-start-column="11" selection-end-line="117" selection-end-column="22" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/content_current_session.xml">
       <provider editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
@@ -1951,26 +2027,10 @@
         <state />
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/ryanarifswana/bioflix/MainActivity.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="59" column="32" selection-start-line="59" selection-start-column="17" selection-end-line="59" selection-end-column="32" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/ryanarifswana/bioflix/NewSessionActivity.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="20" column="13" selection-start-line="20" selection-start-column="13" selection-end-line="20" selection-end-column="13" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/java/com/ryanarifswana/bioflix/database/DatabaseHandler.java">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
-          <caret line="192" column="22" selection-start-line="192" selection-start-column="22" selection-end-line="192" selection-end-column="22" />
+          <caret line="63" column="0" selection-start-line="63" selection-start-column="0" selection-end-line="63" selection-end-column="0" />
           <folding />
         </state>
       </provider>
@@ -1978,41 +2038,54 @@
     <entry file="file://$PROJECT_DIR$/app/src/main/java/com/ryanarifswana/bioflix/MSBandService.java">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
-          <caret line="142" column="52" selection-start-line="142" selection-start-column="52" selection-end-line="142" selection-end-column="52" />
+          <caret line="103" column="0" selection-start-line="103" selection-start-column="0" selection-end-line="103" selection-end-column="0" />
           <folding>
             <element signature="class#LocalBinder#0;class#MSBandService#0" expanded="false" />
+            <element signature="method#onBind#0;class#MSBandService#0" expanded="false" />
             <element signature="method#startSession#0;class#MSBandService#0" expanded="false" />
             <element signature="method#continueSession#0;class#MSBandService#0" expanded="false" />
             <element signature="method#stopSession#0;class#MSBandService#0" expanded="false" />
-            <element signature="e#4456#4457#0" expanded="true" />
-            <element signature="e#4513#4514#0" expanded="true" />
-            <element signature="e#4897#4898#0" expanded="true" />
-            <element signature="e#4948#4949#0" expanded="true" />
+            <element signature="method#startHeartRate#0;class#MSBandService#0" expanded="false" />
+            <element signature="method#startRates#0;class#MSBandService#0" expanded="false" />
+            <element signature="method#stopRates#0;class#MSBandService#0" expanded="false" />
+            <element signature="method#startGsr#0;class#MSBandService#0" expanded="false" />
             <element signature="method#requestConsent#0;class#MSBandService#0" expanded="false" />
             <element signature="method#addHr#0;class#MSBandService#0" expanded="false" />
             <element signature="method#addGsr#0;class#MSBandService#0" expanded="false" />
             <element signature="method#sendError#0;class#MSBandService#0" expanded="false" />
             <element signature="method#startTimer#0;class#MSBandService#0" expanded="false" />
+            <element signature="method#getConnectedBandClient#0;class#MSBandService#0" expanded="false" />
+            <element signature="class#HeartRateSubscriptionTask#0;class#MSBandService#0" expanded="false" />
+            <element signature="method#doInBackground#0;class#HeartRateSubscriptionTask#0;class#MSBandService#0" expanded="false" />
+            <element signature="class#HeartRateConsentTask#0;class#MSBandService#0" expanded="false" />
+            <element signature="method#doInBackground#0;class#HeartRateConsentTask#0;class#MSBandService#0" expanded="false" />
+            <element signature="e#14712#14713#0" expanded="true" />
+            <element signature="e#14755#14756#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/java/com/ryanarifswana/bioflix/CurrentSessionActivity.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.061251663">
-          <caret line="112" column="28" selection-start-line="112" selection-start-column="28" selection-end-line="112" selection-end-column="28" />
+        <state vertical-scroll-proportion="2.057257">
+          <caret line="103" column="5" selection-start-line="103" selection-start-column="5" selection-end-line="103" selection-end-column="5" />
           <folding>
-            <element signature="method#doNotLocked#0;class#CurrentSessionActivity#0" expanded="false" />
-            <element signature="method#doLocked#0;class#CurrentSessionActivity#0" expanded="false" />
-            <element signature="class#UpdateHr#0;class#CurrentSessionActivity#0" expanded="false" />
-            <element signature="method#UpdateHr#0;class#UpdateHr#0;class#CurrentSessionActivity#0" expanded="false" />
-            <element signature="method#run#0;class#UpdateHr#0;class#CurrentSessionActivity#0" expanded="false" />
-            <element signature="class#UpdateGSR#0;class#CurrentSessionActivity#0" expanded="false" />
-            <element signature="class#UpdateTimer#0;class#CurrentSessionActivity#0" expanded="false" />
-            <element signature="method#showRegisterBandSnackbar#0;class#CurrentSessionActivity#0" expanded="false" />
-            <element signature="docComment;field#bandConnection#0;class#CurrentSessionActivity#0" expanded="false" />
-            <element signature="class#BandResultsReceiver#0;class#CurrentSessionActivity#0" expanded="false" />
-            <element signature="method#onReceiveResult#0;class#BandResultsReceiver#0;class#CurrentSessionActivity#0" expanded="false" />
+            <element signature="imports" expanded="true" />
+            <element signature="e#5157#5158#0" expanded="true" />
+            <element signature="e#5209#5210#0" expanded="true" />
+            <element signature="e#5237#5238#0" expanded="true" />
+            <element signature="e#5312#5313#0" expanded="true" />
+            <element signature="e#5437#5438#0" expanded="true" />
+            <element signature="e#5491#5492#0" expanded="true" />
+            <element signature="e#5519#5520#0" expanded="true" />
+            <element signature="e#5599#5600#0" expanded="true" />
+            <element signature="e#5836#6145#0" expanded="true" />
+            <element signature="e#6019#6029#0" expanded="true" />
+            <element signature="e#6144#6145#0" expanded="true" />
+            <element signature="e#7284#7285#0" expanded="true" />
+            <element signature="e#7322#7323#0" expanded="true" />
+            <element signature="e#8324#8325#0" expanded="true" />
+            <element signature="e#8376#8377#0" expanded="true" />
           </folding>
         </state>
       </provider>
