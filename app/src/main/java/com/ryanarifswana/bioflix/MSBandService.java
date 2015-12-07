@@ -51,7 +51,7 @@ public class MSBandService extends Service {
     public final static String BUNDLE_TIMER_TIME = "time";
 
     private final static int HR_BUFFER = 20;     //buffer before writing to db
-    private final static int GSR_BUFFER = 10;
+    private final static int GSR_BUFFER = 5;
 
     private static long baseTime;
 
@@ -150,6 +150,7 @@ public class MSBandService extends Service {
         db.concludeGsr(sessionId, gsrArray, gsrTimeArray, gsrIndex);
         db.endSession(sessionId, System.currentTimeMillis());
         Session session = db.getSession(sessionId);
+        log(session.toString());
         apiClient = new ServerComm(baseContext);
         apiClient.postSession(session);
         handler.removeCallbacksAndMessages(null);

@@ -5,10 +5,15 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.os.Environment;
 import android.util.Log;
 
 import com.ryanarifswana.bioflix.database.model.Session;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.nio.channels.FileChannel;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -82,12 +87,13 @@ public class DatabaseHandler extends SQLiteOpenHelper{
 
         String query = "SELECT *" + " FROM " + TABLE_SESSIONS + " WHERE " + KEY_ID + "=" + id;
         Cursor cursor = db.rawQuery(query, null);
-        if(cursor.moveToFirst()) {
+        if (cursor.moveToFirst()) {
             ContentValues values = new ContentValues();
             values.put(KEY_END_TIME, endTime);
             values.put(KEY_COMPLETE, 1);
             db.update(TABLE_SESSIONS, values, KEY_ID + " = ?", new String[]{String.valueOf(id)});
         }
+        db.close();
     }
 
     //Return complete sessions only
@@ -99,7 +105,6 @@ public class DatabaseHandler extends SQLiteOpenHelper{
         Cursor cursor = db.rawQuery(selectQuery, null);
 
         // looping through all rows and adding to list
-        Log.d("Cursor count:", "" + cursor.getCount());
         if (cursor.moveToFirst()) {
             do {
                 //only return complete sessions
@@ -115,16 +120,17 @@ public class DatabaseHandler extends SQLiteOpenHelper{
                 }
             } while (cursor.moveToNext());
         }
+        db.close();
         return sessionList;
     }
 
     public Session getSession(long id) {
-        Log.d("getSession", "called");
+        log("getSession() called");
         Session session = null;
         SQLiteDatabase db = this.getWritableDatabase();
         String query = "SELECT *" + " FROM " + TABLE_SESSIONS + " WHERE " + KEY_ID + "=" + id;
         Cursor cursor = db.rawQuery(query, null);
-        if(cursor.moveToFirst()) {
+        if (cursor.moveToFirst()) {
             session = new Session(
                     cursor.getLong(cursor.getColumnIndex(KEY_ID)),
                     cursor.getString(cursor.getColumnIndex(KEY_MOVIE_NAME)),
@@ -138,12 +144,12 @@ public class DatabaseHandler extends SQLiteOpenHelper{
                     cursor.getString(cursor.getColumnIndex(KEY_GSR_TIMES))
             );
         }
-        Log.d("getSession", "returning");
+        db.close();
         return session;
     }
 
     public void concludeHr(long id, int[] hr, long[] hrTimes, int indexLength) {
-        Log.d("conculdeHr", "called");
+        log("concludeHr() called");
         SQLiteDatabase db = this.getWritableDatabase();
         String query = "SELECT *" + " FROM " + TABLE_SESSIONS + " WHERE " + KEY_ID + "=" + id;
         Cursor cursor = db.rawQuery(query, null);
@@ -163,23 +169,20 @@ public class DatabaseHandler extends SQLiteOpenHelper{
                 }
             }
             ContentValues values = new ContentValues();
-            Log.d("***HR_ARRAY_LENGTH_s", "" + hrBuilder.toString());
-            Log.d("***HR_TIMES_LENGTH_s", "" + hrTimesBuilder.toString());
-            Log.d("***HR_ARRAY_LENGTH", "" + hrBuilder.toString().split(",").length);
-            Log.d("***HR_TIMES_LENGTH", "" + hrTimesBuilder.toString().split(",").length);
             values.put(KEY_HR_ARRAY, hrBuilder.toString());
             values.put(KEY_HR_TIMES, hrTimesBuilder.toString());
-            Log.d("conculdeHr", "finished");
+            db.update(TABLE_SESSIONS, values, KEY_ID + " = ?", new String[]{String.valueOf(id)});
+            db.close();
         }
     }
 
     public void concludeGsr(long id, int[] gsr, long[] gsrTimes, int indexLength) {
-        Log.d("conculdeGsr", "called");
+        log("concludeGsr() called");
         SQLiteDatabase db = this.getWritableDatabase();
         String query = "SELECT *" + " FROM " + TABLE_SESSIONS + " WHERE " + KEY_ID + "=" + id;
         Cursor cursor = db.rawQuery(query, null);
 
-        if(cursor.moveToFirst()) {
+        if (cursor.moveToFirst()) {
             StringBuilder gsrBuilder = new StringBuilder(cursor.getString(cursor.getColumnIndex(KEY_GSR_ARRAY)));
             StringBuilder gsrTimesBuilder = new StringBuilder(cursor.getString(cursor.getColumnIndex(KEY_GSR_TIMES)));
             for (int i = 0; i < indexLength; i++) {
@@ -194,13 +197,10 @@ public class DatabaseHandler extends SQLiteOpenHelper{
                 }
             }
             ContentValues values = new ContentValues();
-            Log.d("***GSR_ARRAY_LENGTH_s", "" + gsrBuilder.toString());
-            Log.d("***GSR_TIMES_LENGTH_s", "" + gsrTimesBuilder.toString());
-            Log.d("***GSR_ARRAY_LENGTH", "" + gsrBuilder.toString().split(",").length);
-            Log.d("***GSR_TIMES_LENGTH", "" + gsrTimesBuilder.toString().split(",").length);
             values.put(KEY_GSR_ARRAY, gsrBuilder.toString());
             values.put(KEY_GSR_TIMES, gsrTimesBuilder.toString());
-            Log.d("conculdeGsr", "finished");
+            db.update(TABLE_SESSIONS, values, KEY_ID + " = ?", new String[]{String.valueOf(id)});
+            db.close();
         }
     }
 
@@ -222,6 +222,34 @@ public class DatabaseHandler extends SQLiteOpenHelper{
             values.put(KEY_HR_ARRAY, hrBuilder.toString());
             values.put(KEY_HR_TIMES, hrTimesBuilder.toString());
             db.update(TABLE_SESSIONS, values, KEY_ID + " = ?", new String[]{String.valueOf(id)});
+            db.close();
+        }
+    }
+
+    public void saveDbToSd() {
+        try {
+            File sd = Environment.getExternalStorageDirectory();
+            log(sd.toString());
+            File data = Environment.getDataDirectory();
+            log(sd.canWrite()+"");
+            if (sd.canWrite()) {
+                log("sd.canWrite()");
+                String currentDBPath = "/data/com.ryanarifswana.bioflix/databases/biosessions";
+                String backupDBPath = "biosessions-backup.db";
+                File currentDB = new File(currentDBPath);
+                File backupDB = new File(sd, backupDBPath);
+
+                if (currentDB.exists()) {
+                    log("currentDB.exists()");
+                    FileChannel src = new FileInputStream(currentDB).getChannel();
+                    FileChannel dst = new FileOutputStream(backupDB).getChannel();
+                    dst.transferFrom(src, 0, src.size());
+                    src.close();
+                    dst.close();
+                }
+            }
+        } catch (Exception e) {
+            Log.e("DatabaseHandler", e.toString());
         }
     }
 
@@ -243,6 +271,11 @@ public class DatabaseHandler extends SQLiteOpenHelper{
             values.put(KEY_GSR_ARRAY, gsrBuilder.toString());
             values.put(KEY_GSR_TIMES, gsrTimesBuilder.toString());
             db.update(TABLE_SESSIONS, values, KEY_ID + " = ?", new String[]{String.valueOf(id)});
+            db.close();
         }
+    }
+
+    private void log(String s) {
+        Log.d("DatabaseHandler", s);
     }
 }

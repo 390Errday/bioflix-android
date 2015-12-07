@@ -121,4 +121,18 @@ public class Session {
     public void setGsrTimes(String gsrTimes) {
         this.gsrTimes = gsrTimes;
     }
+
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("id: \t").append(this.id).append("\n")
+                .append("movieName: \t").append(this.movieName).append("\n")
+                .append("viewerName: \t").append(this.viewerName).append("\n")
+                .append("startTime: \t").append(this.startTime).append("\n")
+                .append("endTime: \t").append(this.endTime).append("\n")
+                .append("hrArray: \t").append(this.hrArray).append("\n")
+                .append("hrTimes: \t").append(this.hrTimes).append("\n")
+                .append("gsrArray: \t").append(this.gsrArray).append("\n")
+                .append("gsrTimes: \t").append(this.gsrTimes).append("\n");
+        return sb.toString();
+    }
 }

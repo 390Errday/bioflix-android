@@ -5,6 +5,7 @@ import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.util.Log;
+import android.widget.Toast;
 
 import cz.msebera.android.httpclient.Header;
 import cz.msebera.android.httpclient.entity.StringEntity;
@@ -14,10 +15,10 @@ import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.ryanarifswana.bioflix.database.model.Session;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 
 /**
@@ -46,21 +47,33 @@ public class ServerComm {
             jSession.put("viewer_name", session.getViewerName());
             jSession.put("start_time", session.getStartTime());
             jSession.put("end_time", session.getEndTime());
+
             StringEntity entity = new StringEntity(jSession.toString());
+
             client.post(mContext, uploadUrl, null, entity, "application/json", new JsonHttpResponseHandler() {
                 @Override
                 public void onSuccess(int statusCode, Header[] headers, String response) {
-                    System.out.println(response);
+                    Log.d("POST:", response);
+                    Toast.makeText(mContext, "Uploaded Successfully!", Toast.LENGTH_LONG).show();
+                }
+
+                @Override
+                public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                    Log.d("POST:", response.toString());
+                    Toast.makeText(mContext, "Uploaded Successfully!", Toast.LENGTH_LONG).show();
                 }
 
                 @Override
                 public void onFailure(int statusCode, Header[] headers, String response, Throwable e) {
-                    System.out.println(response);
+                    Log.d("POST:", response);
+                    Toast.makeText(mContext, "Upload error!", Toast.LENGTH_LONG).show();
                 }
             });
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         } catch (JSONException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
             e.printStackTrace();
         }
 
