@@ -1,0 +1,6 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools" tools:context=".CurrentSessionActivity">
+    <item android:id="@+id/action_startLivePreview" android:title="@string/action_startLivePreview"
+        android:orderInCategory="100" app:showAsAction="never" />
+</menu>

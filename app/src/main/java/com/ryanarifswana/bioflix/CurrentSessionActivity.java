@@ -14,6 +14,8 @@ import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -69,6 +71,28 @@ public class CurrentSessionActivity extends AppCompatActivity {
     }
 
     @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_current_session, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        int id = item.getItemId();
+
+        //noinspection SimplifiableIfStatement
+        if (id == R.id.action_startLivePreview) {
+            MSBandService.startLivePreviewProcedure();
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
     public void onPause() {
         log("onPause() called");
         if (!MSBandService.inSession && serviceBound) {
@@ -113,7 +137,6 @@ public class CurrentSessionActivity extends AppCompatActivity {
             MSBandService.startSession(movieName, viewerName);
             startSessionButton.setText("Stop Session");
         }
-
     }
 
     public void doNotLocked() {

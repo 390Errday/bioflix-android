@@ -10,4 +10,5 @@
     <string name="empty_recycler_text">You do not have any sessions yet!</string>
     <string name="startSession">Start Session</string>
     <string name="menu_backupdb">Backup DB</string>
+    <string name="action_startLivePreview">Start Live Preview</string>
 </resources>

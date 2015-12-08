@@ -12,6 +12,7 @@ import cz.msebera.android.httpclient.entity.StringEntity;
 
 import com.loopj.android.http.AsyncHttpClient;
 
+import com.loopj.android.http.AsyncHttpResponseHandler;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.ryanarifswana.bioflix.database.model.Session;
 
@@ -27,7 +28,9 @@ import java.io.UnsupportedEncodingException;
 public class ServerComm {
     Context mContext;
     AsyncHttpClient client;
-    private final String uploadUrl = "http://bioflix-umass.herokuapp.com/upload";
+    private final String socketRequestRoute = "/getsocket";
+    private final String uploadRoute = "/upload";
+    private final String serverUrl = "http://bioflix-umass.herokuapp.com";
 
     public ServerComm(Context context) {
         this.mContext = context;
@@ -49,8 +52,8 @@ public class ServerComm {
             jSession.put("end_time", session.getEndTime());
 
             StringEntity entity = new StringEntity(jSession.toString());
-
-            client.post(mContext, uploadUrl, null, entity, "application/json", new JsonHttpResponseHandler() {
+            String postUrl = serverUrl + uploadRoute;
+            client.post(mContext, postUrl, null, entity, "application/json", new JsonHttpResponseHandler() {
                 @Override
                 public void onSuccess(int statusCode, Header[] headers, String response) {
                     Log.d("POST:", response);
@@ -76,6 +79,43 @@ public class ServerComm {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    public void requestSocket() {
+        String url = serverUrl + socketRequestRoute;
+        client.get(url, new AsyncHttpResponseHandler() {
+
+            @Override
+            public void onStart() {
+                // called before request is started
+            }
+
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, byte[] response) {
+                String socketUrl = response.toString();
+                MSBandService.startLivePreview();
+            }
+
+            @Override
+            public void onFailure(int statusCode, Header[] headers, byte[] errorResponse, Throwable e) {
+                // called when response HTTP status is "4XX" (eg. 401, 403, 404)
+            }
+
+            @Override
+            public void onRetry(int retryNo) {
+                // called when request is retried
+            }
+        });
+    }
+
+    public void sendSocketData(int type, int data, long time) {
+
+        if(type == MSBandService.MSG_HR_TICK) {
+            Log.d("SendSocketData: ", "Sending HR data through socket: " + data + ", " + time);
+        } else if (type == MSBandService.MSG_GSR_TICK) {
+            Log.d("SendSocketData: ", "Sending GSR data through socket: " + data + ", " + time);
+        }
+
 
     }
 

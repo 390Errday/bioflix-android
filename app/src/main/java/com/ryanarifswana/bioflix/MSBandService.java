@@ -65,6 +65,7 @@ public class MSBandService extends Service {
 
     private static long sessionId;
     public static boolean inSession;
+    public static boolean livePreviewOn;
     private static String sessionMovieName;
     private static String sessionViewerName;
 
@@ -90,6 +91,7 @@ public class MSBandService extends Service {
         db = new DatabaseHandler(this);
         bandService = this;
         inSession = false;
+        livePreviewOn = false;
         hrBundle = new Bundle();
         gsrBundle = new Bundle();
         timerBundle = new Bundle();
@@ -151,9 +153,20 @@ public class MSBandService extends Service {
         db.endSession(sessionId, System.currentTimeMillis());
         Session session = db.getSession(sessionId);
         log(session.toString());
-        apiClient = new ServerComm(baseContext);
+        if(apiClient == null) apiClient = new ServerComm(baseContext);
         apiClient.postSession(session);
         handler.removeCallbacksAndMessages(null);
+    }
+
+    public static void startLivePreviewProcedure() {
+        log("startLivePreviewProcedure() called");
+        if(apiClient == null) apiClient = new ServerComm(baseContext);
+        apiClient.requestSocket();
+        livePreviewOn = true;
+    }
+
+    public static void startLivePreview() {
+        livePreviewOn = true;
     }
 
     public static void startRates() {
@@ -189,8 +202,10 @@ public class MSBandService extends Service {
     }
 
     public static void addHr(Bundle bundle) {
-        hrArray[hrIndex] = bundle.getInt(BUNDLE_HR_HR);
-        hrTimeArray[hrIndex] = getElapsedTime();
+        int hr = bundle.getInt(BUNDLE_HR_HR);
+        long time = getElapsedTime();
+        hrArray[hrIndex] = hr;
+        hrTimeArray[hrIndex] = time;
         if(hrIndex == HR_BUFFER - 1) {
             db.appendHR(sessionId, hrArray, hrTimeArray);
             hrArray = new int[HR_BUFFER];
@@ -200,11 +215,17 @@ public class MSBandService extends Service {
         else {
             hrIndex++;
         }
+        if(livePreviewOn) {
+            if(apiClient == null) apiClient = new ServerComm(baseContext);
+            apiClient.sendSocketData(MSG_HR_TICK, hr, time);
+        }
     }
 
     public static void addGsr(Bundle bundle) {
-        gsrArray[gsrIndex] = bundle.getInt(BUNDLE_GSR_RESISTANCE);
-        gsrTimeArray[gsrIndex] = getElapsedTime();
+        int gsr = bundle.getInt(BUNDLE_GSR_RESISTANCE);
+        long time = getElapsedTime();
+        gsrArray[gsrIndex] = gsr;
+        gsrTimeArray[gsrIndex] = time;
         if(gsrIndex == GSR_BUFFER - 1) {
             db.appendGsr(sessionId, gsrArray, gsrTimeArray);
             gsrArray = new int[GSR_BUFFER];
@@ -213,6 +234,10 @@ public class MSBandService extends Service {
         }
         else {
             gsrIndex++;
+        }
+        if(livePreviewOn) {
+            if(apiClient == null) apiClient = new ServerComm(baseContext);
+            apiClient.sendSocketData(MSG_GSR_TICK, gsr, time);
         }
     }
 
