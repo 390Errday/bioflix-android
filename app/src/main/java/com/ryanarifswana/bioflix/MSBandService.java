@@ -43,12 +43,14 @@ public class MSBandService extends Service {
     public final static int MSG_HR_TICK = 2;
     public final static int MSG_GSR_TICK = 3;
     public final static int MSG_TIMER_UPDATE = 4;
+    public final static int MSG_LIVE_URL = 5;
 
     public final static String BUNDLE_ERROR_TEXT = "err";
     public final static String BUNDLE_HR_HR = "hr";
     public final static String BUNDLE_HR_QUALITY = "quality";
     public final static String BUNDLE_GSR_RESISTANCE = "resistance";
     public final static String BUNDLE_TIMER_TIME = "time";
+    public final static String BUNDLE_LIVE_URL = "time";
 
     private final static int HR_BUFFER = 20;     //buffer before writing to db
     private final static int GSR_BUFFER = 5;
@@ -66,6 +68,7 @@ public class MSBandService extends Service {
     private static long sessionId;
     public static boolean inSession;
     public static boolean livePreviewOn;
+    public static boolean hrLocked;
     private static String sessionMovieName;
     private static String sessionViewerName;
 
@@ -92,6 +95,7 @@ public class MSBandService extends Service {
         bandService = this;
         inSession = false;
         livePreviewOn = false;
+        hrLocked = false;
         hrBundle = new Bundle();
         gsrBundle = new Bundle();
         timerBundle = new Bundle();
@@ -158,15 +162,18 @@ public class MSBandService extends Service {
         handler.removeCallbacksAndMessages(null);
     }
 
-    public static void startLivePreviewProcedure() {
-        log("startLivePreviewProcedure() called");
+    public static void startLivePreview() {
+        log("startLivePreview() called");
         if(apiClient == null) apiClient = new ServerComm(baseContext);
-        apiClient.requestSocket();
+        Bundle liveUrlBundle = new Bundle();
+        liveUrlBundle.putString(BUNDLE_LIVE_URL, apiClient.getLiveUrl());
+        resultReceiver.send(MSG_LIVE_URL, liveUrlBundle);
         livePreviewOn = true;
     }
 
-    public static void startLivePreview() {
-        livePreviewOn = true;
+    public static void stopLivePreview() {
+        log("stopLivePreview() called");
+        livePreviewOn = false;
     }
 
     public static void startRates() {
@@ -202,42 +209,46 @@ public class MSBandService extends Service {
     }
 
     public static void addHr(Bundle bundle) {
-        int hr = bundle.getInt(BUNDLE_HR_HR);
-        long time = getElapsedTime();
-        hrArray[hrIndex] = hr;
-        hrTimeArray[hrIndex] = time;
-        if(hrIndex == HR_BUFFER - 1) {
-            db.appendHR(sessionId, hrArray, hrTimeArray);
-            hrArray = new int[HR_BUFFER];
-            hrTimeArray = new long[HR_BUFFER];
-            hrIndex = 0;
-        }
-        else {
-            hrIndex++;
-        }
-        if(livePreviewOn) {
-            if(apiClient == null) apiClient = new ServerComm(baseContext);
-            apiClient.sendSocketData(MSG_HR_TICK, hr, time);
+        if(hrLocked) {
+            int hr = bundle.getInt(BUNDLE_HR_HR);
+            long time = getElapsedTime();
+            hrArray[hrIndex] = hr;
+            hrTimeArray[hrIndex] = time;
+            if(hrIndex == HR_BUFFER - 1) {
+                db.appendHR(sessionId, hrArray, hrTimeArray);
+                hrArray = new int[HR_BUFFER];
+                hrTimeArray = new long[HR_BUFFER];
+                hrIndex = 0;
+            }
+            else {
+                hrIndex++;
+            }
+            if(livePreviewOn) {
+                if(apiClient == null) apiClient = new ServerComm(baseContext);
+                apiClient.sendLiveData("hr", hr, time);
+            }
         }
     }
 
     public static void addGsr(Bundle bundle) {
-        int gsr = bundle.getInt(BUNDLE_GSR_RESISTANCE);
-        long time = getElapsedTime();
-        gsrArray[gsrIndex] = gsr;
-        gsrTimeArray[gsrIndex] = time;
-        if(gsrIndex == GSR_BUFFER - 1) {
-            db.appendGsr(sessionId, gsrArray, gsrTimeArray);
-            gsrArray = new int[GSR_BUFFER];
-            gsrTimeArray = new long[GSR_BUFFER];
-            gsrIndex = 0;
-        }
-        else {
-            gsrIndex++;
-        }
-        if(livePreviewOn) {
-            if(apiClient == null) apiClient = new ServerComm(baseContext);
-            apiClient.sendSocketData(MSG_GSR_TICK, gsr, time);
+        if(hrLocked) {
+            int gsr = bundle.getInt(BUNDLE_GSR_RESISTANCE);
+            long time = getElapsedTime();
+            gsrArray[gsrIndex] = gsr;
+            gsrTimeArray[gsrIndex] = time;
+            if(gsrIndex == GSR_BUFFER - 1) {
+                db.appendGsr(sessionId, gsrArray, gsrTimeArray);
+                gsrArray = new int[GSR_BUFFER];
+                gsrTimeArray = new long[GSR_BUFFER];
+                gsrIndex = 0;
+            }
+            else {
+                gsrIndex++;
+            }
+            if(livePreviewOn) {
+                if(apiClient == null) apiClient = new ServerComm(baseContext);
+                apiClient.sendLiveData("gsr", gsr, time);
+            }
         }
     }
 
@@ -267,6 +278,12 @@ public class MSBandService extends Service {
         public void onBandHeartRateChanged(final BandHeartRateEvent event) {
             if (event != null) {
             //  log("HR tick: " + event.getHeartRate());
+                if(!hrLocked && event.getQuality().toString().equals("LOCKED")) {
+                    hrLocked = true;
+                }
+                else if (hrLocked) {
+                    hrLocked = false;
+                }
                 hrBundle.clear();
                 hrBundle.putInt(BUNDLE_HR_HR, event.getHeartRate());
                 hrBundle.putString(BUNDLE_HR_QUALITY, event.getQuality().toString());

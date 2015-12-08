@@ -34,7 +34,9 @@ public class CurrentSessionActivity extends AppCompatActivity {
     private TextView gsrView;
     private TextView timer;
     private TextView warningText;
+    private TextView liveUrlText;
     private Button startSessionButton;
+    private Menu menu;
     MSBandService bandService;
     BandResultsReceiver resultsReceiver;
     boolean serviceBound = false;
@@ -58,6 +60,8 @@ public class CurrentSessionActivity extends AppCompatActivity {
         timer = (TextView) findViewById(R.id.timer);
         warningText = (TextView) findViewById(R.id.warningText);
         startSessionButton = (Button) findViewById(R.id.startButton);
+        liveUrlText = (TextView) findViewById(R.id.liveUrl);
+        liveUrlText.setVisibility(View.INVISIBLE);
         warningText.setVisibility(View.INVISIBLE);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -72,6 +76,7 @@ public class CurrentSessionActivity extends AppCompatActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
+        this.menu = menu;
         getMenuInflater().inflate(R.menu.menu_current_session, menu);
         return true;
     }
@@ -85,7 +90,17 @@ public class CurrentSessionActivity extends AppCompatActivity {
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_startLivePreview) {
-            MSBandService.startLivePreviewProcedure();
+            MenuItem liveMenuItem = menu.findItem(R.id.action_startLivePreview);
+            if(!MSBandService.livePreviewOn) {
+                MSBandService.startLivePreview();
+                liveMenuItem.setTitle(R.string.action_stopLivePreview);
+            } else {
+                MSBandService.stopLivePreview();
+                liveUrlText.setVisibility(View.INVISIBLE);
+                liveMenuItem.setTitle(R.string.action_startLivePreview);
+
+            }
+
             return true;
         }
 
@@ -137,6 +152,11 @@ public class CurrentSessionActivity extends AppCompatActivity {
             MSBandService.startSession(movieName, viewerName);
             startSessionButton.setText("Stop Session");
         }
+    }
+
+    public void setLiveUrl(String url) {
+        liveUrlText.setText("Your Live Url: \n" + url);
+        liveUrlText.setVisibility(View.VISIBLE);
     }
 
     public void doNotLocked() {
@@ -259,6 +279,9 @@ public class CurrentSessionActivity extends AppCompatActivity {
                     break;
                 case MSBandService.MSG_TIMER_UPDATE:
                     runOnUiThread(new UpdateTimer(resultData.getLong(MSBandService.BUNDLE_TIMER_TIME)));
+                    break;
+                case MSBandService.MSG_LIVE_URL:
+                    setLiveUrl(resultData.getString(MSBandService.BUNDLE_LIVE_URL));
                     break;
                 case MSBandService.MSG_ERROR:
                     Log.d("Error: ", ""+resultData.getString(MSBandService.BUNDLE_ERROR_TEXT));

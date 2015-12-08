@@ -21,6 +21,7 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.util.Random;
 
 /**
  * Created by ariftopcu on 12/3/15.
@@ -28,11 +29,14 @@ import java.io.UnsupportedEncodingException;
 public class ServerComm {
     Context mContext;
     AsyncHttpClient client;
-    private final String socketRequestRoute = "/getsocket";
+    private final int liveUrlRandom;
+    private final String liveUrl = "/live";
     private final String uploadRoute = "/upload";
     private final String serverUrl = "http://bioflix-umass.herokuapp.com";
 
     public ServerComm(Context context) {
+        Random generator = new Random();
+        liveUrlRandom = generator.nextInt(1000);
         this.mContext = context;
         client = new AsyncHttpClient();
     }
@@ -81,42 +85,42 @@ public class ServerComm {
         }
     }
 
-    public void requestSocket() {
-        String url = serverUrl + socketRequestRoute;
-        client.get(url, new AsyncHttpResponseHandler() {
-
-            @Override
-            public void onStart() {
-                // called before request is started
-            }
-
-            @Override
-            public void onSuccess(int statusCode, Header[] headers, byte[] response) {
-                String socketUrl = response.toString();
-                MSBandService.startLivePreview();
-            }
-
-            @Override
-            public void onFailure(int statusCode, Header[] headers, byte[] errorResponse, Throwable e) {
-                // called when response HTTP status is "4XX" (eg. 401, 403, 404)
-            }
-
-            @Override
-            public void onRetry(int retryNo) {
-                // called when request is retried
-            }
-        });
+    public String getLiveUrl() {
+        return serverUrl + liveUrl + "/" + liveUrlRandom;
     }
 
-    public void sendSocketData(int type, int data, long time) {
+    public void sendLiveData(String type, int data, long time) {
+        String dataType = (type.equals("hr") ? "hr" : "gsr");
+        try {
+            JSONObject jsonData = new JSONObject();
+            jsonData.put("type", dataType);
+            jsonData.put("data", data);
+            jsonData.put("time", time);
 
-        if(type == MSBandService.MSG_HR_TICK) {
-            Log.d("SendSocketData: ", "Sending HR data through socket: " + data + ", " + time);
-        } else if (type == MSBandService.MSG_GSR_TICK) {
-            Log.d("SendSocketData: ", "Sending GSR data through socket: " + data + ", " + time);
+            StringEntity entity = new StringEntity(jsonData.toString());
+            client.post(mContext, getLiveUrl(), null, entity, "application/json", new JsonHttpResponseHandler() {
+                @Override
+                public void onSuccess(int statusCode, Header[] headers, String response) {
+                    Log.d("Live Post response:", response);
+                }
+
+                @Override
+                public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                    Log.d("Live Post response:", response.toString());
+                }
+
+                @Override
+                public void onFailure(int statusCode, Header[] headers, String response, Throwable e) {
+                    Log.d("POST:", response);
+                }
+            });
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        } catch (JSONException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
-
-
     }
 
     public boolean isConnected(){

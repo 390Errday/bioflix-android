@@ -11,4 +11,5 @@
     <string name="startSession">Start Session</string>
     <string name="menu_backupdb">Backup DB</string>
     <string name="action_startLivePreview">Start Live Preview</string>
+    <string name="action_stopLivePreview">Stop Live Preview</string>
 </resources>

@@ -143,4 +143,17 @@
         android:layout_marginTop="2dp"
         android:clickable="false" />
 
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="http://bioflixrules.com/live/123"
+        android:id="@+id/liveUrl"
+        android:textColor="@color/colorAccent2Dark"
+        android:textSize="16sp"
+        android:layout_marginTop="29dp"
+        android:layout_below="@+id/startButton"
+        android:layout_centerHorizontal="true"
+        android:textAlignment="center" />
+
 </RelativeLayout>
