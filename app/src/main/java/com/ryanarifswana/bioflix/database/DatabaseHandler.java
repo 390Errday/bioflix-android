@@ -148,7 +148,7 @@ public class DatabaseHandler extends SQLiteOpenHelper{
         return session;
     }
 
-    public void concludeHr(long id, int[] hr, long[] hrTimes, int indexLength) {
+    public void concludeHr(long id, int[] hr, long[] hrTimes, int bufferLength) {
         log("concludeHr() called");
         SQLiteDatabase db = this.getWritableDatabase();
         String query = "SELECT *" + " FROM " + TABLE_SESSIONS + " WHERE " + KEY_ID + "=" + id;
@@ -157,26 +157,32 @@ public class DatabaseHandler extends SQLiteOpenHelper{
         if (cursor.moveToFirst()) {
             StringBuilder hrBuilder = new StringBuilder(cursor.getString(cursor.getColumnIndex(KEY_HR_ARRAY)));
             StringBuilder hrTimesBuilder = new StringBuilder(cursor.getString(cursor.getColumnIndex(KEY_HR_TIMES)));
-            for (int i = 0; i < indexLength; i++) {
-                if (hr[i] > 0) {
-                    if (i == indexLength - 1) {
-                        hrBuilder.append(hr[i]);
-                        hrTimesBuilder.append(hrTimes[i]);
-                    } else {
-                        hrBuilder.append(hr[i]).append(",");
-                        hrTimesBuilder.append(hrTimes[i]).append(",");
+            if(bufferLength == 0) { //if the buffer is empty, remove the last comma
+                hrBuilder.setLength(hrBuilder.length() - 1);
+                hrTimesBuilder.setLength(hrTimesBuilder.length() - 1);
+            } else {
+                for (int i = 0; i < bufferLength; i++) {
+                    if (hr[i] > 0) {
+                        if (i == bufferLength - 1) {
+                            hrBuilder.append(hr[i]);
+                            hrTimesBuilder.append(hrTimes[i]);
+                        } else {
+                            hrBuilder.append(hr[i]).append(",");
+                            hrTimesBuilder.append(hrTimes[i]).append(",");
+                        }
                     }
                 }
             }
+
             ContentValues values = new ContentValues();
             values.put(KEY_HR_ARRAY, hrBuilder.toString());
             values.put(KEY_HR_TIMES, hrTimesBuilder.toString());
             db.update(TABLE_SESSIONS, values, KEY_ID + " = ?", new String[]{String.valueOf(id)});
-            db.close();
         }
+        db.close();
     }
 
-    public void concludeGsr(long id, int[] gsr, long[] gsrTimes, int indexLength) {
+    public void concludeGsr(long id, int[] gsr, long[] gsrTimes, int bufferLength) {
         log("concludeGsr() called");
         SQLiteDatabase db = this.getWritableDatabase();
         String query = "SELECT *" + " FROM " + TABLE_SESSIONS + " WHERE " + KEY_ID + "=" + id;
@@ -185,23 +191,29 @@ public class DatabaseHandler extends SQLiteOpenHelper{
         if (cursor.moveToFirst()) {
             StringBuilder gsrBuilder = new StringBuilder(cursor.getString(cursor.getColumnIndex(KEY_GSR_ARRAY)));
             StringBuilder gsrTimesBuilder = new StringBuilder(cursor.getString(cursor.getColumnIndex(KEY_GSR_TIMES)));
-            for (int i = 0; i < indexLength; i++) {
-                if (gsr[i] > 0) {
-                    if (i == indexLength - 1) {
-                        gsrBuilder.append(gsr[i]);
-                        gsrTimesBuilder.append(gsrTimes[i]);
-                    } else {
-                        gsrBuilder.append(gsr[i]).append(",");
-                        gsrTimesBuilder.append(gsrTimes[i]).append(",");
+            if(bufferLength == 0) { //if the buffer is empty, remove the last comma
+                gsrBuilder.setLength(gsrBuilder.length() - 1);
+                gsrTimesBuilder.setLength(gsrTimesBuilder.length() - 1);
+            } else {
+                for (int i = 0; i < bufferLength; i++) {
+                    if (gsr[i] > 0) {
+                        if (i == bufferLength - 1) {
+                            gsrBuilder.append(gsr[i]);
+                            gsrTimesBuilder.append(gsrTimes[i]);
+                        } else {
+                            gsrBuilder.append(gsr[i]).append(",");
+                            gsrTimesBuilder.append(gsrTimes[i]).append(",");
+                        }
                     }
                 }
             }
+
             ContentValues values = new ContentValues();
             values.put(KEY_GSR_ARRAY, gsrBuilder.toString());
             values.put(KEY_GSR_TIMES, gsrTimesBuilder.toString());
             db.update(TABLE_SESSIONS, values, KEY_ID + " = ?", new String[]{String.valueOf(id)});
-            db.close();
         }
+        db.close();
     }
 
     public void appendHR(long id, int[] hr, long[] hrTimes) {
@@ -222,8 +234,8 @@ public class DatabaseHandler extends SQLiteOpenHelper{
             values.put(KEY_HR_ARRAY, hrBuilder.toString());
             values.put(KEY_HR_TIMES, hrTimesBuilder.toString());
             db.update(TABLE_SESSIONS, values, KEY_ID + " = ?", new String[]{String.valueOf(id)});
-            db.close();
         }
+        db.close();
     }
 
     public void appendGsr(long id, int[] gsr, long[] gsrTimes) {
@@ -244,8 +256,8 @@ public class DatabaseHandler extends SQLiteOpenHelper{
             values.put(KEY_GSR_ARRAY, gsrBuilder.toString());
             values.put(KEY_GSR_TIMES, gsrTimesBuilder.toString());
             db.update(TABLE_SESSIONS, values, KEY_ID + " = ?", new String[]{String.valueOf(id)});
-            db.close();
         }
+        db.close();
     }
 
     private void log(String s) {
