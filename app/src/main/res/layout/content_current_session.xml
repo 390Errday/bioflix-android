@@ -127,21 +127,43 @@
         android:textColor="@color/colorAccent2Dark"
         android:textSize="16sp" />
 
-    <Button
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:text="@string/startSession"
-        android:id="@+id/startButton"
-        android:onClick="startButton"
-        android:layout_gravity="center_horizontal"
-        android:background="@color/colorPrimary"
-        android:textColor="@color/colorPrimaryLightest"
-        android:paddingLeft="8dp"
-        android:paddingRight="8dp"
-        android:layout_below="@+id/warningText"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="2dp"
-        android:clickable="false" />
+        android:layout_below="@+id/warningText"
+        android:layout_marginTop="8dp"
+        android:gravity="center"
+        android:id="@+id/linearLayout2">
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/stopSession"
+            android:id="@+id/stopButton"
+            android:onClick="stopButton"
+            android:background="@color/colorPrimaryLight"
+            android:textColor="@color/colorPrimaryLightest"
+            android:paddingLeft="8dp"
+            android:paddingRight="8dp"
+            android:clickable="false"
+            android:layout_marginRight="4dp" />
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/startSession"
+            android:id="@+id/startButton"
+            android:onClick="startButton"
+            android:background="@color/colorPrimary"
+            android:textColor="@color/colorPrimaryLightest"
+            android:paddingLeft="8dp"
+            android:paddingRight="8dp"
+            android:clickable="false"
+            android:layout_marginLeft="4dp" />
+
+    </LinearLayout>
 
     <TextView
         android:layout_width="wrap_content"
@@ -151,9 +173,9 @@
         android:id="@+id/liveUrl"
         android:textColor="@color/colorAccent2Dark"
         android:textSize="16sp"
-        android:layout_marginTop="29dp"
-        android:layout_below="@+id/startButton"
+        android:textAlignment="center"
+        android:layout_below="@+id/linearLayout2"
         android:layout_centerHorizontal="true"
-        android:textAlignment="center" />
+        android:layout_marginTop="8dp" />
 
 </RelativeLayout>

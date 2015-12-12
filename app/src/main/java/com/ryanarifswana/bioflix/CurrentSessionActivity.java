@@ -36,6 +36,7 @@ public class CurrentSessionActivity extends AppCompatActivity {
     private TextView warningText;
     private TextView liveUrlText;
     private Button startSessionButton;
+    private Button stopSessionButton;
     private Menu menu;
     MSBandService bandService;
     BandResultsReceiver resultsReceiver;
@@ -60,9 +61,12 @@ public class CurrentSessionActivity extends AppCompatActivity {
         timer = (TextView) findViewById(R.id.timer);
         warningText = (TextView) findViewById(R.id.warningText);
         startSessionButton = (Button) findViewById(R.id.startButton);
+        stopSessionButton = (Button) findViewById(R.id.stopButton);
         liveUrlText = (TextView) findViewById(R.id.liveUrl);
+
         liveUrlText.setVisibility(View.INVISIBLE);
         warningText.setVisibility(View.INVISIBLE);
+        stopSessionButton.setClickable(false);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.setTitle(movieName);
@@ -100,7 +104,6 @@ public class CurrentSessionActivity extends AppCompatActivity {
                 liveMenuItem.setTitle(R.string.action_startLivePreview);
 
             }
-
             return true;
         }
 
@@ -110,7 +113,7 @@ public class CurrentSessionActivity extends AppCompatActivity {
     @Override
     public void onPause() {
         log("onPause() called");
-        if (!MSBandService.inSession && serviceBound) {
+        if (serviceBound) {
             MSBandService.stopRates();
         }
         super.onPause();
@@ -120,7 +123,7 @@ public class CurrentSessionActivity extends AppCompatActivity {
     public void onResume() {
         log("onResume() called");
         super.onResume();
-        if (!MSBandService.inSession && serviceBound) {
+        if (serviceBound) {
             MSBandService.startRates();
         }
     }
@@ -144,14 +147,40 @@ public class CurrentSessionActivity extends AppCompatActivity {
 
     //onClickListener for startMovieButton
     public void startButton(View view) {
-        if(MSBandService.inSession) {
-            MSBandService.stopSession();
-            startSessionButton.setText("Start Session");
-        }
-        else {
+        log("startButton() called");
+        if (MSBandService.STATE == MSBandService.SessionState.IN_SESSION) {
+            log("pausing session...");
+            MSBandService.pauseSession();
+            startSessionButton.setText("Continue Session");
+        } else if(MSBandService.STATE == MSBandService.SessionState.SESSION_PAUSED) {
+            log("continuing session");
+            MSBandService.continueSession();
+            startSessionButton.setText("Pause Session");
+        } else {
+            log("starting session...");
             MSBandService.startSession(movieName, viewerName);
-            startSessionButton.setText("Stop Session");
+            enableStopButton();
+            startSessionButton.setText("Pause Session");
         }
+    }
+
+    //onClickListener for startMovieButton
+    public void stopButton(View view) {
+        log("stopButton() called");
+        if (MSBandService.STATE == MSBandService.SessionState.IN_SESSION) {
+            log("stopping session...");
+            MSBandService.stopSession();
+        }
+    }
+
+    public void enableStopButton() {
+        stopSessionButton.setBackgroundResource(R.color.colorPrimary);
+        stopSessionButton.setClickable(true);
+    }
+
+    public void disableStopButton() {
+        stopSessionButton.setBackgroundResource(R.color.colorPrimaryLight);
+        stopSessionButton.setClickable(false);
     }
 
     public void setLiveUrl(String url) {

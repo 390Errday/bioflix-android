@@ -48,10 +48,13 @@ public class MSBandService extends Service {
     public final static String BUNDLE_TIME = "time";
     public final static String BUNDLE_LIVE_URL = "time";
 
+    public static SessionState STATE;
+
     private final static int HR_BUFFER = 20;     //buffer before writing to db
     private final static int GSR_BUFFER = 5;
 
     private static long baseTime;
+    private static long pauseTime;
 
     private static int[] hrArray;
     private static long[] hrTimeArray;
@@ -62,9 +65,9 @@ public class MSBandService extends Service {
     private static int gsrIndex;
 
     private static long sessionId;
-    public static boolean inSession;
     public static boolean livePreviewOn;
     public static boolean hrLocked;
+    public static boolean ratesOn;
     private static String sessionMovieName;
     private static String sessionViewerName;
 
@@ -90,9 +93,11 @@ public class MSBandService extends Service {
         db = new DatabaseHandler(this);
         bandService = this;
         baseTime = 0;
-        inSession = false;
+        pauseTime = 0;
+        STATE = SessionState.SESSION_STOPPED;
         livePreviewOn = false;
         hrLocked = false;
+        ratesOn = false;
         hrBundle = new Bundle();
         gsrBundle = new Bundle();
         timerBundle = new Bundle();
@@ -113,6 +118,10 @@ public class MSBandService extends Service {
         return START_STICKY;
     }
 
+    public enum SessionState{
+        IN_SESSION, SESSION_PAUSED, SESSION_STOPPED
+    }
+
 //    @Override
 //    public void onDestroy() {
 //        log("onDestroy() called");
@@ -120,7 +129,8 @@ public class MSBandService extends Service {
 
     public static void startSession(String movieName, String viewerName) {
         log("startSession() called");
-        if (!inSession) {
+        if (STATE == SessionState.SESSION_STOPPED) {
+            log("starting new session...");
             sessionMovieName = movieName;
             sessionViewerName = viewerName;
             hrArray = new int[HR_BUFFER];
@@ -131,8 +141,21 @@ public class MSBandService extends Service {
             gsrIndex = 0;
             sessionId = db.newSession(sessionMovieName, sessionViewerName, System.currentTimeMillis());
             baseTime = System.currentTimeMillis();
-            inSession = true;
+            STATE = SessionState.IN_SESSION;
             startTimer();
+        }
+    }
+
+    /*
+    TODO: ...
+     */
+    public static void pauseSession() {
+        log("pauseSession() called");
+        if(STATE == SessionState.IN_SESSION) {
+            log("pausing session...");
+            pauseTime = getElapsedTime();
+            stopTimer();
+            STATE = SessionState.SESSION_PAUSED;
         }
     }
 
@@ -140,23 +163,29 @@ public class MSBandService extends Service {
     TODO: to be completed
      */
     public static void continueSession() {
-        if(!inSession) {
-            baseTime = System.currentTimeMillis() - baseTime;
-            Log.d("startSession()", "sessionStarted!");
+        log("continueSession() called");
+        if (STATE == SessionState.SESSION_PAUSED) {
+            log("continuing session...");
+            baseTime = System.currentTimeMillis() - pauseTime;
+            startTimer();
+            STATE = SessionState.IN_SESSION;
         }
     }
 
     public static void stopSession() {
         log("stopSession() called");
-        inSession = false;
-        db.concludeHr(sessionId, hrArray, hrTimeArray, hrIndex);
-        db.concludeGsr(sessionId, gsrArray, gsrTimeArray, gsrIndex);
-        db.endSession(sessionId, System.currentTimeMillis());
-        Session session = db.getSession(sessionId);
-        log(session.toString());
-        if(apiClient == null) apiClient = new ServerComm(baseContext);
-        apiClient.postSession(session);
-        handler.removeCallbacksAndMessages(null);
+        if(STATE == SessionState.IN_SESSION) {
+            log("stopping session...");
+            STATE = SessionState.SESSION_STOPPED;
+            db.concludeHr(sessionId, hrArray, hrTimeArray, hrIndex);
+            db.concludeGsr(sessionId, gsrArray, gsrTimeArray, gsrIndex);
+            db.endSession(sessionId, System.currentTimeMillis());
+            Session session = db.getSession(sessionId);
+            log(session.toString());
+            if (apiClient == null) apiClient = new ServerComm(baseContext);
+            apiClient.postSession(session);
+            stopTimer();
+        }
     }
 
     public static void startLivePreview() {
@@ -175,17 +204,24 @@ public class MSBandService extends Service {
 
     public static void startRates() {
         log("startRate() called");
-        startHeartRate();
-        startGsr();
+        if(!ratesOn) {
+            ratesOn = true;
+            startHeartRate();
+            startGsr();
+        }
     }
 
     public static void stopRates() {
         log("stopRate() called");
-        if (client != null) {
-            try {
-                client.getSensorManager().unregisterAllListeners();
-            } catch (BandIOException e) {
-                log(e.getMessage());
+        if (STATE == SessionState.SESSION_STOPPED) {
+            log("stopping rates...");
+            ratesOn = false;
+            if (client != null) {
+                try {
+                    client.getSensorManager().unregisterAllListeners();
+                } catch (BandIOException e) {
+                    log(e.getMessage());
+                }
             }
         }
     }
@@ -271,6 +307,10 @@ public class MSBandService extends Service {
         }, 1000);
     }
 
+    private static void stopTimer() {
+        handler.removeCallbacksAndMessages(null);
+    }
+
     private static BandHeartRateEventListener mHeartRateEventListener = new BandHeartRateEventListener() {
         @Override
         public void onBandHeartRateChanged(final BandHeartRateEvent event) {
@@ -287,7 +327,7 @@ public class MSBandService extends Service {
                 hrBundle.putString(BUNDLE_HR_QUALITY, event.getQuality().toString());
                 hrBundle.putLong(BUNDLE_TIME, getElapsedTime());
                 resultReceiver.send(MSG_HR_TICK, hrBundle);
-                if (inSession) {
+                if (STATE == SessionState.IN_SESSION) {
                     addHr(hrBundle);
                     if(livePreviewOn) {
                         sendLiveHr(hrBundle);
@@ -305,7 +345,7 @@ public class MSBandService extends Service {
                 gsrBundle.putInt(BUNDLE_GSR_RESISTANCE, event.getResistance());
                 gsrBundle.putLong(BUNDLE_TIME, getElapsedTime());
                 resultReceiver.send(MSG_GSR_TICK, gsrBundle);
-                if(inSession) {
+                if(STATE == SessionState.IN_SESSION) {
                     addGsr(gsrBundle);
                     if(livePreviewOn) {
                         sendLiveGsr(gsrBundle);
