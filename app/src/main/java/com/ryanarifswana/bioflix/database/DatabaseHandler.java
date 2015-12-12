@@ -226,33 +226,6 @@ public class DatabaseHandler extends SQLiteOpenHelper{
         }
     }
 
-    public void saveDbToSd() {
-        try {
-            File sd = Environment.getExternalStorageDirectory();
-            log(sd.toString());
-            File data = Environment.getDataDirectory();
-            log(sd.canWrite()+"");
-            if (sd.canWrite()) {
-                log("sd.canWrite()");
-                String currentDBPath = "/data/com.ryanarifswana.bioflix/databases/biosessions";
-                String backupDBPath = "biosessions-backup.db";
-                File currentDB = new File(currentDBPath);
-                File backupDB = new File(sd, backupDBPath);
-
-                if (currentDB.exists()) {
-                    log("currentDB.exists()");
-                    FileChannel src = new FileInputStream(currentDB).getChannel();
-                    FileChannel dst = new FileOutputStream(backupDB).getChannel();
-                    dst.transferFrom(src, 0, src.size());
-                    src.close();
-                    dst.close();
-                }
-            }
-        } catch (Exception e) {
-            Log.e("DatabaseHandler", e.toString());
-        }
-    }
-
     public void appendGsr(long id, int[] gsr, long[] gsrTimes) {
         SQLiteDatabase db = this.getWritableDatabase();
         String query = "SELECT *" + " FROM " + TABLE_SESSIONS + " WHERE " + KEY_ID + "=" + id;
