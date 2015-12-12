@@ -278,7 +278,7 @@ public class CurrentSessionActivity extends AppCompatActivity {
                     showRegisterBandSnackbar();
                     break;
                 case MSBandService.MSG_TIMER_UPDATE:
-                    runOnUiThread(new UpdateTimer(resultData.getLong(MSBandService.BUNDLE_TIMER_TIME)));
+                    runOnUiThread(new UpdateTimer(resultData.getLong(MSBandService.BUNDLE_TIME)));
                     break;
                 case MSBandService.MSG_LIVE_URL:
                     setLiveUrl(resultData.getString(MSBandService.BUNDLE_LIVE_URL));

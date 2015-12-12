@@ -96,7 +96,7 @@ public class ServerComm {
             jsonData.put("type", dataType);
             jsonData.put("data", data);
             jsonData.put("time", time);
-
+            Log.d("Posting: ", dataType + " " + data + " " + time);
             StringEntity entity = new StringEntity(jsonData.toString());
             client.post(mContext, getLiveUrl(), null, entity, "application/json", new JsonHttpResponseHandler() {
                 @Override
