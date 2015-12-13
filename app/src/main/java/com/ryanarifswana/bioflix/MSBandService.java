@@ -24,6 +24,8 @@ import com.microsoft.band.sensors.BandGsrEvent;
 import com.microsoft.band.sensors.BandGsrEventListener;
 import com.microsoft.band.sensors.BandHeartRateEvent;
 import com.microsoft.band.sensors.BandHeartRateEventListener;
+import com.microsoft.band.sensors.BandSkinTemperatureEvent;
+import com.microsoft.band.sensors.BandSkinTemperatureEventListener;
 import com.microsoft.band.sensors.HeartRateConsentListener;
 import com.ryanarifswana.bioflix.database.DatabaseHandler;
 import com.ryanarifswana.bioflix.database.model.Session;
@@ -38,20 +40,23 @@ public class MSBandService extends Service {
     public final static int MSG_BAND_NOT_REGISTERED = 1;
     public final static int MSG_HR_TICK = 2;
     public final static int MSG_GSR_TICK = 3;
-    public final static int MSG_TIMER_UPDATE = 4;
-    public final static int MSG_LIVE_URL = 5;
+    public final static int MSG_SKIN_TEMP_TICK = 4;
+    public final static int MSG_TIMER_UPDATE = 5;
+    public final static int MSG_LIVE_URL = 6;
 
     public final static String BUNDLE_ERROR_TEXT = "err";
     public final static String BUNDLE_HR_HR = "hr";
     public final static String BUNDLE_HR_QUALITY = "quality";
     public final static String BUNDLE_GSR_RESISTANCE = "resistance";
+    public final static String BUNDLE_SKIN_TEMP = "skintemp";
     public final static String BUNDLE_TIME = "time";
     public final static String BUNDLE_LIVE_URL = "time";
 
     public static SessionState STATE;
 
     private final static int HR_BUFFER = 20;     //buffer before writing to db
-    private final static int GSR_BUFFER = 5;
+    private final static int GSR_BUFFER = 10;
+    private final static int SKIN_BUFFER = 10;
 
     private static long baseTime;
     private static long pauseTime;
@@ -64,6 +69,10 @@ public class MSBandService extends Service {
     private static long[] gsrTimeArray;
     private static int gsrIndex;
 
+    private static double[] skinTempArray;
+    private static long[] skinTempTimeArray;
+    private static int skinTempIndex;
+
     private static long sessionId;
     public static boolean livePreviewOn;
     public static boolean hrLocked;
@@ -75,6 +84,7 @@ public class MSBandService extends Service {
     private static ResultReceiver resultReceiver;
     private static Bundle hrBundle;
     private static Bundle gsrBundle;
+    private static Bundle skinTempBundle;
     private static Bundle timerBundle;
     private static Bundle errBundle;
     private static DatabaseHandler db;
@@ -100,6 +110,7 @@ public class MSBandService extends Service {
         ratesOn = false;
         hrBundle = new Bundle();
         gsrBundle = new Bundle();
+        skinTempBundle = new Bundle();
         timerBundle = new Bundle();
         errBundle = new Bundle();
         handler = new Handler();
@@ -114,6 +125,7 @@ public class MSBandService extends Service {
             resultReceiver = intent.getParcelableExtra("receiver");
             startHeartRate();
             startGsr();
+            startSkinTemp();
         }
         return START_STICKY;
     }
@@ -137,8 +149,11 @@ public class MSBandService extends Service {
             hrTimeArray = new long[HR_BUFFER];
             gsrArray = new int[GSR_BUFFER];
             gsrTimeArray = new long[GSR_BUFFER];
+            skinTempArray = new double[SKIN_BUFFER];
+            skinTempTimeArray = new long[SKIN_BUFFER];
             hrIndex = 0;
             gsrIndex = 0;
+            skinTempIndex = 0;
             sessionId = db.newSession(sessionMovieName, sessionViewerName, System.currentTimeMillis());
             baseTime = System.currentTimeMillis();
             STATE = SessionState.IN_SESSION;
@@ -146,9 +161,6 @@ public class MSBandService extends Service {
         }
     }
 
-    /*
-    TODO: ...
-     */
     public static void pauseSession() {
         log("pauseSession() called");
         if(STATE == SessionState.IN_SESSION) {
@@ -159,9 +171,6 @@ public class MSBandService extends Service {
         }
     }
 
-    /*
-    TODO: to be completed
-     */
     public static void continueSession() {
         log("continueSession() called");
         if (STATE == SessionState.SESSION_PAUSED) {
@@ -179,6 +188,7 @@ public class MSBandService extends Service {
             STATE = SessionState.SESSION_STOPPED;
             db.concludeHr(sessionId, hrArray, hrTimeArray, hrIndex);
             db.concludeGsr(sessionId, gsrArray, gsrTimeArray, gsrIndex);
+            db.concludeSkinTemp(sessionId, skinTempArray, skinTempTimeArray, skinTempIndex);
             db.endSession(sessionId, System.currentTimeMillis());
             Session session = db.getSession(sessionId);
             log(session.toString());
@@ -208,6 +218,7 @@ public class MSBandService extends Service {
             ratesOn = true;
             startHeartRate();
             startGsr();
+            startSkinTemp();
         }
     }
 
@@ -234,6 +245,11 @@ public class MSBandService extends Service {
     public static void startGsr() {
         log("startGsr() called");
         new GsrSubscriptionTask().execute();
+    }
+
+    public static void startSkinTemp() {
+        log("startSkingTmpe() called");
+        new SkinTempSubscriptionTask().execute();
     }
 
     public void requestConsent(WeakReference<Activity> reference) {
@@ -276,14 +292,36 @@ public class MSBandService extends Service {
         }
     }
 
+    public static void addSkinTemp(Bundle bundle) {
+        if(hrLocked) {
+            double temp = bundle.getDouble(BUNDLE_SKIN_TEMP);
+            long time = bundle.getLong(BUNDLE_TIME);
+            skinTempArray[skinTempIndex] = temp;
+            skinTempTimeArray[skinTempIndex] = time;
+            if (skinTempIndex == SKIN_BUFFER - 1) {
+                db.appendSkinTemp(sessionId, skinTempArray, skinTempTimeArray);
+                skinTempArray = new double[SKIN_BUFFER];
+                skinTempTimeArray = new long[SKIN_BUFFER];
+                skinTempIndex = 0;
+            } else {
+                skinTempIndex++;
+            }
+        }
+    }
+
     public static void sendLiveHr(Bundle bundle) {
         if(apiClient == null) apiClient = new ServerComm(baseContext);
-        apiClient.sendLiveData("hr", bundle.getInt(BUNDLE_HR_HR), bundle.getLong(BUNDLE_TIME));
+        apiClient.sendLiveData(MSG_HR_TICK, bundle);
     }
 
     public static void sendLiveGsr(Bundle bundle) {
         if(apiClient == null) apiClient = new ServerComm(baseContext);
-        apiClient.sendLiveData("gsr", bundle.getInt(BUNDLE_GSR_RESISTANCE), bundle.getLong(BUNDLE_TIME));
+        apiClient.sendLiveData(MSG_GSR_TICK, bundle);
+    }
+
+    public static void sendLiveSkinTemp(Bundle bundle) {
+        if(apiClient == null) apiClient = new ServerComm(baseContext);
+        apiClient.sendLiveData(MSG_SKIN_TEMP_TICK, bundle);
     }
 
     public static void sendError(String error) {
@@ -355,6 +393,24 @@ public class MSBandService extends Service {
         }
     };
 
+    private static BandSkinTemperatureEventListener mSkinTempEventListener = new BandSkinTemperatureEventListener() {
+        @Override
+        public void onBandSkinTemperatureChanged(BandSkinTemperatureEvent event) {
+            if(event != null) {
+                skinTempBundle.clear();
+                skinTempBundle.putDouble(BUNDLE_SKIN_TEMP, event.getTemperature());
+                skinTempBundle.putLong(BUNDLE_TIME, getElapsedTime());
+                resultReceiver.send(MSG_SKIN_TEMP_TICK, skinTempBundle);
+                if (STATE == SessionState.IN_SESSION) {
+                    addSkinTemp(skinTempBundle);
+                    if (livePreviewOn) {
+                        sendLiveSkinTemp(skinTempBundle);
+                    }
+                }
+            }
+        }
+    };
+
     private static boolean getConnectedBandClient() throws InterruptedException, BandException {
         if (client == null) {
             BandInfo[] devices = BandClientManager.getInstance().getPairedBands();
@@ -383,6 +439,38 @@ public class MSBandService extends Service {
                     } else {
                         sendError("The Gsr sensor is not supported with your Band version. Microsoft Band 2 is required.\n");
                     }
+                } else {
+                    sendError("Band isn't connected. Please make sure bluetooth is on and the band is in range.\n");
+                }
+            } catch (BandException e) {
+                String exceptionMessage="";
+                switch (e.getErrorType()) {
+                    case UNSUPPORTED_SDK_VERSION_ERROR:
+                        exceptionMessage = "Microsoft Health BandService doesn't support your SDK Version. Please update to latest SDK.\n";
+                        break;
+                    case SERVICE_ERROR:
+                        exceptionMessage = "Microsoft Health BandService is not available. Please make sure Microsoft Health is installed and that you have the correct permissions.\n";
+                        break;
+                    default:
+                        exceptionMessage = "Unknown error occured: " + e.getMessage() + "\n";
+                        break;
+                }
+                sendError(exceptionMessage);
+
+            } catch (Exception e) {
+                sendError(e.getMessage());
+            }
+            return null;
+        }
+    }
+
+    private static class SkinTempSubscriptionTask extends AsyncTask<Void, Void, Void> {
+        @Override
+        protected Void doInBackground(Void... params) {
+            try {
+                if (getConnectedBandClient()) {
+                    client.getSensorManager().registerSkinTemperatureEventListener(mSkinTempEventListener);
+
                 } else {
                     sendError("Band isn't connected. Please make sure bluetooth is on and the band is in range.\n");
                 }

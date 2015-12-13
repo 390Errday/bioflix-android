@@ -21,7 +21,7 @@ import java.util.List;
  * Created by ariftopcu on 11/27/15.
  */
 public class DatabaseHandler extends SQLiteOpenHelper{
-    private static final int DATABASE_VERSION = 2;
+    private static final int DATABASE_VERSION = 3;
     private static final String DATABASE_NAME = "biosessions";
     private static final String TABLE_SESSIONS = "sessions";
 
@@ -35,6 +35,8 @@ public class DatabaseHandler extends SQLiteOpenHelper{
     private static final String KEY_HR_TIMES = "hr_times";
     private static final String KEY_GSR_ARRAY = "gsr_array";
     private static final String KEY_GSR_TIMES = "gsr_times";
+    private static final String KEY_SKIN_TEMP_ARRAY = "temp_array";
+    private static final String KEY_SKIN_TEMP_TIMES = "temp_times";
 
     //private static final String KEY_IMDB_ID = "imdb_id";
 
@@ -49,7 +51,8 @@ public class DatabaseHandler extends SQLiteOpenHelper{
                 + KEY_START_TIME + " INTEGER," + KEY_END_TIME + " INTEGER,"
                 + KEY_VIEWER_NAME + " TEXT," + KEY_COMPLETE + " INTEGER,"
                 + KEY_HR_ARRAY + " TEXT," + KEY_HR_TIMES + " TEXT,"
-                + KEY_GSR_ARRAY + " TEXT," + KEY_GSR_TIMES + " TEXT"
+                + KEY_GSR_ARRAY + " TEXT," + KEY_GSR_TIMES + " TEXT,"
+                + KEY_SKIN_TEMP_ARRAY + " TEXT," + KEY_SKIN_TEMP_TIMES + " TEXT"
                 + ")";
         db.execSQL(CREATE_CONTACTS_TABLE);
     }
@@ -76,6 +79,8 @@ public class DatabaseHandler extends SQLiteOpenHelper{
         values.put(KEY_HR_TIMES, "");
         values.put(KEY_GSR_ARRAY, "");
         values.put(KEY_GSR_TIMES, "");
+        values.put(KEY_SKIN_TEMP_ARRAY, "");
+        values.put(KEY_SKIN_TEMP_TIMES, "");
 
         long id = db.insert(TABLE_SESSIONS, null, values);
         db.close();
@@ -141,7 +146,9 @@ public class DatabaseHandler extends SQLiteOpenHelper{
                     cursor.getString(cursor.getColumnIndex(KEY_HR_ARRAY)),
                     cursor.getString(cursor.getColumnIndex(KEY_HR_TIMES)),
                     cursor.getString(cursor.getColumnIndex(KEY_GSR_ARRAY)),
-                    cursor.getString(cursor.getColumnIndex(KEY_GSR_TIMES))
+                    cursor.getString(cursor.getColumnIndex(KEY_GSR_TIMES)),
+                    cursor.getString(cursor.getColumnIndex(KEY_SKIN_TEMP_ARRAY)),
+                    cursor.getString(cursor.getColumnIndex(KEY_SKIN_TEMP_TIMES))
             );
         }
         db.close();
@@ -157,7 +164,7 @@ public class DatabaseHandler extends SQLiteOpenHelper{
         if (cursor.moveToFirst()) {
             StringBuilder hrBuilder = new StringBuilder(cursor.getString(cursor.getColumnIndex(KEY_HR_ARRAY)));
             StringBuilder hrTimesBuilder = new StringBuilder(cursor.getString(cursor.getColumnIndex(KEY_HR_TIMES)));
-            if(bufferLength == 0) { //if the buffer is empty, remove the last comma
+            if(bufferLength == 0) { //if the buffer is empty, just remove the last comma
                 hrBuilder.setLength(hrBuilder.length() - 1);
                 hrTimesBuilder.setLength(hrTimesBuilder.length() - 1);
             } else {
@@ -191,7 +198,7 @@ public class DatabaseHandler extends SQLiteOpenHelper{
         if (cursor.moveToFirst()) {
             StringBuilder gsrBuilder = new StringBuilder(cursor.getString(cursor.getColumnIndex(KEY_GSR_ARRAY)));
             StringBuilder gsrTimesBuilder = new StringBuilder(cursor.getString(cursor.getColumnIndex(KEY_GSR_TIMES)));
-            if(bufferLength == 0) { //if the buffer is empty, remove the last comma
+            if(bufferLength == 0) { //if the buffer is empty, just remove the last comma
                 gsrBuilder.setLength(gsrBuilder.length() - 1);
                 gsrTimesBuilder.setLength(gsrTimesBuilder.length() - 1);
             } else {
@@ -211,6 +218,40 @@ public class DatabaseHandler extends SQLiteOpenHelper{
             ContentValues values = new ContentValues();
             values.put(KEY_GSR_ARRAY, gsrBuilder.toString());
             values.put(KEY_GSR_TIMES, gsrTimesBuilder.toString());
+            db.update(TABLE_SESSIONS, values, KEY_ID + " = ?", new String[]{String.valueOf(id)});
+        }
+        db.close();
+    }
+
+    public void concludeSkinTemp(long id, double[] temp, long[] tempTimes, int bufferLength) {
+        log("concludeSkinTemp() called");
+        SQLiteDatabase db = this.getWritableDatabase();
+        String query = "SELECT *" + " FROM " + TABLE_SESSIONS + " WHERE " + KEY_ID + "=" + id;
+        Cursor cursor = db.rawQuery(query, null);
+
+        if (cursor.moveToFirst()) {
+            StringBuilder tempBuilder = new StringBuilder(cursor.getString(cursor.getColumnIndex(KEY_SKIN_TEMP_ARRAY)));
+            StringBuilder tempTimesBuilder = new StringBuilder(cursor.getString(cursor.getColumnIndex(KEY_SKIN_TEMP_TIMES)));
+            if(bufferLength == 0) { //if the buffer is empty, remove the last comma
+                tempBuilder.setLength(tempBuilder.length() - 1);
+                tempTimesBuilder.setLength(tempTimesBuilder.length() - 1);
+            } else {
+                for (int i = 0; i < bufferLength; i++) {
+                    if (temp[i] > 0) {
+                        if (i == bufferLength - 1) {
+                            tempBuilder.append(temp[i]);
+                            tempTimesBuilder.append(tempTimes[i]);
+                        } else {
+                            tempBuilder.append(temp[i]).append(",");
+                            tempTimesBuilder.append(tempTimes[i]).append(",");
+                        }
+                    }
+                }
+            }
+
+            ContentValues values = new ContentValues();
+            values.put(KEY_SKIN_TEMP_ARRAY, tempBuilder.toString());
+            values.put(KEY_SKIN_TEMP_TIMES, tempTimesBuilder.toString());
             db.update(TABLE_SESSIONS, values, KEY_ID + " = ?", new String[]{String.valueOf(id)});
         }
         db.close();
@@ -255,6 +296,28 @@ public class DatabaseHandler extends SQLiteOpenHelper{
             ContentValues values = new ContentValues();
             values.put(KEY_GSR_ARRAY, gsrBuilder.toString());
             values.put(KEY_GSR_TIMES, gsrTimesBuilder.toString());
+            db.update(TABLE_SESSIONS, values, KEY_ID + " = ?", new String[]{String.valueOf(id)});
+        }
+        db.close();
+    }
+
+    public void appendSkinTemp(long id, double[] tempArray, long[] tempTimesArray) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        String query = "SELECT *" + " FROM " + TABLE_SESSIONS + " WHERE " + KEY_ID + "=" + id;
+        Cursor cursor = db.rawQuery(query, null);
+
+        if(cursor.moveToFirst()) {
+            StringBuilder tempBuilder = new StringBuilder(cursor.getString(cursor.getColumnIndex(KEY_SKIN_TEMP_ARRAY)));
+            StringBuilder tempTimesBuilder = new StringBuilder(cursor.getString(cursor.getColumnIndex(KEY_SKIN_TEMP_TIMES)));
+            for(int i = 0; i < tempArray.length; i++) {
+                if(tempArray[i] > 0) {
+                    tempBuilder.append(tempArray[i]).append(",");
+                    tempTimesBuilder.append(tempTimesArray[i]).append(",");
+                }
+            }
+            ContentValues values = new ContentValues();
+            values.put(KEY_SKIN_TEMP_ARRAY, tempBuilder.toString());
+            values.put(KEY_SKIN_TEMP_TIMES, tempTimesBuilder.toString());
             db.update(TABLE_SESSIONS, values, KEY_ID + " = ?", new String[]{String.valueOf(id)});
         }
         db.close();

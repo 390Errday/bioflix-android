@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.os.Bundle;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -89,14 +90,27 @@ public class ServerComm {
         return serverUrl + liveUrl + "/" + liveUrlRandom;
     }
 
-    public void sendLiveData(String type, int data, long time) {
-        String dataType = (type.equals("hr") ? "hr" : "gsr");
+    public void sendLiveData(int type, Bundle data) {
         try {
             JSONObject jsonData = new JSONObject();
-            jsonData.put("type", dataType);
-            jsonData.put("data", data);
-            jsonData.put("time", time);
-            Log.d("Posting: ", dataType + " " + data + " " + time);
+//            jsonData.put("type", type);
+//            jsonData.put("data", data);
+            jsonData.put("time", data.getLong(MSBandService.BUNDLE_TIME));
+            switch(type) {
+                case MSBandService.MSG_HR_TICK:
+                    jsonData.put("type", "hr");
+                    jsonData.put("data", data.getInt(MSBandService.BUNDLE_HR_HR));
+                    break;
+                case MSBandService.MSG_GSR_TICK:
+                    jsonData.put("type", "gsr");
+                    jsonData.put("data", data.getInt(MSBandService.BUNDLE_GSR_RESISTANCE));
+                    break;
+                case MSBandService.MSG_SKIN_TEMP_TICK:
+                    jsonData.put("type", "temp");
+                    jsonData.put("data", data.getDouble(MSBandService.BUNDLE_SKIN_TEMP));
+                    break;
+            }
+            Log.d("Posting: ", jsonData.toString());
             StringEntity entity = new StringEntity(jsonData.toString());
             client.post(mContext, getLiveUrl(), null, entity, "application/json", new JsonHttpResponseHandler() {
                 @Override

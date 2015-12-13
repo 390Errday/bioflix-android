@@ -241,6 +241,18 @@ public class CurrentSessionActivity extends AppCompatActivity {
         }
     }
 
+    class UpdateSkinTemp implements Runnable {
+        double temp;
+
+        public UpdateSkinTemp(Bundle bundle) {
+            this.temp = bundle.getDouble(MSBandService.BUNDLE_SKIN_TEMP);
+        }
+        public void run() {
+            Log.d("Temp:", "" + temp);
+
+        }
+    }
+
     class UpdateTimer implements Runnable {
         long updatedTime;
 
@@ -302,6 +314,9 @@ public class CurrentSessionActivity extends AppCompatActivity {
                     break;
                 case MSBandService.MSG_GSR_TICK:
                     runOnUiThread(new UpdateGSR(resultData.getInt(MSBandService.BUNDLE_GSR_RESISTANCE)));
+                    break;
+                case MSBandService.MSG_SKIN_TEMP_TICK:
+                    runOnUiThread(new UpdateSkinTemp(resultData));
                     break;
                 case MSBandService.MSG_BAND_NOT_REGISTERED:
                     showRegisterBandSnackbar();

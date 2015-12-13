@@ -2,6 +2,7 @@ package com.ryanarifswana.bioflix;
 
 import android.graphics.drawable.shapes.Shape;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -61,6 +62,8 @@ public class MovieRecyclerAdapter extends RecyclerView.Adapter<MovieRecyclerAdap
         movieNameView.setText(sessions.get(position).getMovieName());
         viewerName.setText(sessions.get(position).getViewerName());
         SimpleDateFormat sdf = new SimpleDateFormat("EEE, MMM d, ''yy", Locale.US);
+        Log.d("start time", "" + sessions.get(position).getStartTime());
+        Log.d("start time, formatted", ""+sessions.get(position).getStartTime());
         recordDate.setText(sdf.format(new Date(sessions.get(position).getStartTime())));
         if(position == sessions.size() - 1) {
 
