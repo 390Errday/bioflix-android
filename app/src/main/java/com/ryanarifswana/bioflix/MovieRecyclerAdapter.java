@@ -61,14 +61,8 @@ public class MovieRecyclerAdapter extends RecyclerView.Adapter<MovieRecyclerAdap
 
         movieNameView.setText(sessions.get(position).getMovieName());
         viewerName.setText(sessions.get(position).getViewerName());
-        SimpleDateFormat sdf = new SimpleDateFormat("EEE, MMM d, ''yy", Locale.US);
-        Log.d("start time", "" + sessions.get(position).getStartTime());
-        Log.d("start time, formatted", ""+sessions.get(position).getStartTime());
+        SimpleDateFormat sdf = new SimpleDateFormat("EEE, MMM d, yyyy", Locale.US);
         recordDate.setText(sdf.format(new Date(sessions.get(position).getStartTime())));
-        if(position == sessions.size() - 1) {
-
-        }
-
     }
 
     // Return the size of your dataset (invoked by the layout manager)

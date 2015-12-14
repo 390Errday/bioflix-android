@@ -117,8 +117,8 @@ public class DatabaseHandler extends SQLiteOpenHelper{
                     Session session = new Session();
                     session.setId(cursor.getLong(cursor.getColumnIndex(KEY_ID)));
                     session.setMovieName(cursor.getString(cursor.getColumnIndex(KEY_MOVIE_NAME)));
-                    session.setStartTime(cursor.getInt(cursor.getColumnIndex(KEY_START_TIME)));
-                    session.setEndTime(cursor.getInt(cursor.getColumnIndex(KEY_END_TIME)));
+                    session.setStartTime(cursor.getLong(cursor.getColumnIndex(KEY_START_TIME)));
+                    session.setEndTime(cursor.getLong(cursor.getColumnIndex(KEY_END_TIME)));
                     session.setViewerName(cursor.getString(cursor.getColumnIndex(KEY_VIEWER_NAME)));
                     session.setComplete(true);
                     sessionList.add(session);
