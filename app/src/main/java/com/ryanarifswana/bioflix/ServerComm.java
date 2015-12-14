@@ -5,6 +5,7 @@ import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
+import android.os.ResultReceiver;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -17,6 +18,7 @@ import com.loopj.android.http.AsyncHttpResponseHandler;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.ryanarifswana.bioflix.database.model.Session;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -31,8 +33,9 @@ public class ServerComm {
     Context mContext;
     AsyncHttpClient client;
     private final int liveUrlRandom;
-    private final String liveUrl = "/live";
-    private final String uploadRoute = "/upload";
+    private final String apiPath = "/api";
+    private final String livePath = "/live";
+    private final String uploadPath = "/upload";
     private final String serverUrl = "http://bioflix-umass.herokuapp.com";
 
     public ServerComm(Context context) {
@@ -40,6 +43,17 @@ public class ServerComm {
         liveUrlRandom = generator.nextInt(1000);
         this.mContext = context;
         client = new AsyncHttpClient();
+    }
+
+    //TODO
+    public void getRemoteSessions(final ResultReceiver receiver) {
+        String url = serverUrl + apiPath + "/getallsessions";
+        client.get(url, new JsonHttpResponseHandler() {
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
+                Log.d("Jsonresponse", response.toString());
+            }
+        });
     }
 
     public void postSession(Session session) {
@@ -90,7 +104,7 @@ public class ServerComm {
     }
 
     public String getLiveUrl() {
-        return serverUrl + liveUrl + "/" + liveUrlRandom;
+        return serverUrl + livePath + "/" + liveUrlRandom;
     }
 
     public void sendLiveData(int type, Bundle data) {
