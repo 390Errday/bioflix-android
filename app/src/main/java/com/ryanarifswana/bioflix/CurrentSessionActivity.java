@@ -19,6 +19,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.microsoft.band.sensors.HeartRateQuality;
 
@@ -263,7 +264,6 @@ public class CurrentSessionActivity extends AppCompatActivity {
         }
         public void run() {
             Log.d("Temp:", "" + temp);
-
         }
     }
 
@@ -275,6 +275,17 @@ public class CurrentSessionActivity extends AppCompatActivity {
         }
         public void run() {
             timer.setText(timerFormat.format(new Date(updatedTime)));
+        }
+    }
+
+    class ShowToast implements Runnable {
+        String message;
+
+        public ShowToast(String text) {
+            this.message = text;
+        }
+        public void run() {
+            Toast.makeText(currentSessionActivity, message, Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -342,6 +353,7 @@ public class CurrentSessionActivity extends AppCompatActivity {
                     setLiveUrl(resultData.getString(MSBandService.BUNDLE_LIVE_URL));
                     break;
                 case MSBandService.MSG_ERROR:
+                    runOnUiThread(new ShowToast(resultData.getString(MSBandService.BUNDLE_ERROR_TEXT)));
                     Log.d("Error: ", ""+resultData.getString(MSBandService.BUNDLE_ERROR_TEXT));
                     break;
             }
