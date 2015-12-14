@@ -74,7 +74,7 @@ public class ServerComm {
 
             StringEntity entity = new StringEntity(jSession.toString());
             Log.d("Posting json file", jSession.toString());
-            String postUrl = serverUrl + uploadRoute;
+            String postUrl = serverUrl + uploadPath;
             client.post(mContext, postUrl, null, entity, "application/json", new JsonHttpResponseHandler() {
                 @Override
                 public void onSuccess(int statusCode, Header[] headers, String response) {
