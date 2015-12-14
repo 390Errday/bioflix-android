@@ -56,7 +56,7 @@ public class MSBandService extends Service {
 
     private final static int HR_BUFFER = 20;     //buffer before writing to db
     private final static int GSR_BUFFER = 10;
-    private final static int SKIN_BUFFER = 10;
+    private final static int SKIN_BUFFER = 5;
 
     private static long baseTime;
     private static long pauseTime;
@@ -123,9 +123,7 @@ public class MSBandService extends Service {
         log("onStartCommand() called");
         if(intent != null) {
             resultReceiver = intent.getParcelableExtra("receiver");
-            startHeartRate();
-            startGsr();
-            startSkinTemp();
+            startRates();
         }
         return START_STICKY;
     }
@@ -143,6 +141,7 @@ public class MSBandService extends Service {
         log("startSession() called");
         if (STATE == SessionState.SESSION_STOPPED) {
             log("starting new session...");
+            startRates();
             sessionMovieName = movieName;
             sessionViewerName = viewerName;
             hrArray = new int[HR_BUFFER];
@@ -213,7 +212,7 @@ public class MSBandService extends Service {
     }
 
     public static void startRates() {
-        log("startRate() called");
+        log("startRates() called");
         if(!ratesOn) {
             ratesOn = true;
             startHeartRate();
@@ -248,7 +247,7 @@ public class MSBandService extends Service {
     }
 
     public static void startSkinTemp() {
-        log("startSkingTmpe() called");
+        log("startSkinTemp() called");
         new SkinTempSubscriptionTask().execute();
     }
 
@@ -355,9 +354,11 @@ public class MSBandService extends Service {
             if (event != null) {
             //  log("HR tick: " + event.getHeartRate());
                 if(!hrLocked && event.getQuality().toString().equals("LOCKED")) {
+                    log("HR is locked");
                     hrLocked = true;
                 }
-                else if (hrLocked) {
+                else if (hrLocked && !event.getQuality().toString().equals("LOCKED")) {
+                    log("HR is NOT locked");
                     hrLocked = false;
                 }
                 hrBundle.clear();

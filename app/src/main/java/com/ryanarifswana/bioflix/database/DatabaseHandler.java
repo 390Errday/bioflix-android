@@ -198,7 +198,7 @@ public class DatabaseHandler extends SQLiteOpenHelper{
         if (cursor.moveToFirst()) {
             StringBuilder gsrBuilder = new StringBuilder(cursor.getString(cursor.getColumnIndex(KEY_GSR_ARRAY)));
             StringBuilder gsrTimesBuilder = new StringBuilder(cursor.getString(cursor.getColumnIndex(KEY_GSR_TIMES)));
-            if(bufferLength == 0 && gsrBuilder.length() > 1) { //if the buffer is empty and if there's gsr data, just remove the last comma
+            if(bufferLength == 0 && gsrBuilder.length() > 0) { //if the buffer is empty and if there's gsr data, just remove the last comma
                 gsrBuilder.setLength(gsrBuilder.length() - 1);
                 gsrTimesBuilder.setLength(gsrTimesBuilder.length() - 1);
             } else {
@@ -232,7 +232,7 @@ public class DatabaseHandler extends SQLiteOpenHelper{
         if (cursor.moveToFirst()) {
             StringBuilder tempBuilder = new StringBuilder(cursor.getString(cursor.getColumnIndex(KEY_SKIN_TEMP_ARRAY)));
             StringBuilder tempTimesBuilder = new StringBuilder(cursor.getString(cursor.getColumnIndex(KEY_SKIN_TEMP_TIMES)));
-            if(bufferLength == 0 && tempBuilder.length() > 1) { //if the buffer is empty, remove the last comma
+            if(bufferLength == 0 && tempBuilder.length() > 0) { //if the buffer is empty, remove the last comma
                 tempBuilder.setLength(tempBuilder.length() - 1);
                 tempTimesBuilder.setLength(tempTimesBuilder.length() - 1);
             } else {

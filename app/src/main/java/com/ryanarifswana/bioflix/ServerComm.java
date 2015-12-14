@@ -52,22 +52,25 @@ public class ServerComm {
             jSession.put("hr_times", session.getHrTimes());
             jSession.put("gsr_data", session.getGsrArray());
             jSession.put("gsr_times", session.getGsrTimes());
+            jSession.put("temp_data", session.getTempArray());
+            jSession.put("temp_times", session.getTempTimes());
             jSession.put("viewer_name", session.getViewerName());
             jSession.put("start_time", session.getStartTime());
             jSession.put("end_time", session.getEndTime());
 
             StringEntity entity = new StringEntity(jSession.toString());
+            Log.d("Posting json file", jSession.toString());
             String postUrl = serverUrl + uploadRoute;
             client.post(mContext, postUrl, null, entity, "application/json", new JsonHttpResponseHandler() {
                 @Override
                 public void onSuccess(int statusCode, Header[] headers, String response) {
-                    Log.d("POST:", response);
+                    Log.d("POST response", response);
                     Toast.makeText(mContext, "Uploaded Successfully!", Toast.LENGTH_LONG).show();
                 }
 
                 @Override
                 public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-                    Log.d("POST:", response.toString());
+                    Log.d("POST response", response.toString());
                     Toast.makeText(mContext, "Uploaded Successfully!", Toast.LENGTH_LONG).show();
                 }
 

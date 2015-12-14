@@ -205,7 +205,7 @@ public class CurrentSessionActivity extends AppCompatActivity {
     public void doNotLocked() {
         warningText.setText("Acquiring sensors...");
         warningText.setVisibility(View.VISIBLE);
-        if(MSBandService.STATE == MSBandService.SessionState.IN_SESSION) {
+        if(MSBandService.STATE == MSBandService.SessionState.SESSION_STOPPED) {
             disableStartButton();
         }
     }
