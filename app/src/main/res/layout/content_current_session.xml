@@ -156,7 +156,7 @@
             android:text="@string/startSession"
             android:id="@+id/startButton"
             android:onClick="startButton"
-            android:background="@color/colorPrimary"
+            android:background="@color/colorPrimaryLight"
             android:textColor="@color/colorPrimaryLightest"
             android:paddingLeft="8dp"
             android:paddingRight="8dp"

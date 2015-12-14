@@ -67,6 +67,7 @@ public class CurrentSessionActivity extends AppCompatActivity {
         liveUrlText.setVisibility(View.INVISIBLE);
         warningText.setVisibility(View.INVISIBLE);
         stopSessionButton.setClickable(false);
+        startSessionButton.setClickable(false);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.setTitle(movieName);
@@ -170,7 +171,19 @@ public class CurrentSessionActivity extends AppCompatActivity {
         if (MSBandService.STATE == MSBandService.SessionState.IN_SESSION) {
             log("stopping session...");
             MSBandService.stopSession();
+            disableStopButton();
+            //TODO: Go to different activity
         }
+    }
+
+    public void enableStartButton() {
+        startSessionButton.setBackgroundResource(R.color.colorPrimary);
+        startSessionButton.setClickable(true);
+    }
+
+    public void disableStartButton() {
+        startSessionButton.setBackgroundResource(R.color.colorPrimaryLight);
+        startSessionButton.setClickable(false);
     }
 
     public void enableStopButton() {
@@ -191,12 +204,17 @@ public class CurrentSessionActivity extends AppCompatActivity {
     public void doNotLocked() {
         warningText.setText("Acquiring sensors...");
         warningText.setVisibility(View.VISIBLE);
-        startSessionButton.setClickable(false);
+        if(MSBandService.STATE == MSBandService.SessionState.IN_SESSION) {
+            disableStartButton();
+        }
     }
 
     public void doLocked() {
         warningText.setVisibility(View.INVISIBLE);
         startSessionButton.setClickable(true);
+        if (MSBandService.STATE == MSBandService.SessionState.SESSION_STOPPED) {
+            enableStartButton();
+        }
     }
 
     class UpdateHr implements Runnable {
@@ -225,10 +243,6 @@ public class CurrentSessionActivity extends AppCompatActivity {
 
         }
     }
-
-//    private int calculateFadeOutTime(int hr) {
-//        return (60000 - (fadeInTime * 60)) / hr;
-//    }
 
     class UpdateGSR implements Runnable {
         int updatedGSR;
