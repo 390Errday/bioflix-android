@@ -91,11 +91,9 @@ public class Session {
     public String getTempTimes() {
         return tempTimes;
     }
-
     public boolean isComplete(){
         return complete;
     }
-
     public void setId(long id) {
         this.id = id;
     }
@@ -132,7 +130,6 @@ public class Session {
     public void setTempTimes(String tempTimes) {
         this.tempTimes = tempTimes;
     }
-
     public String toString() {
         StringBuilder sb = new StringBuilder();
         sb.append("id: \t").append(this.id).append("\n")

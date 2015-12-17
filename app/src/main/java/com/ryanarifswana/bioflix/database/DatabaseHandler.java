@@ -38,8 +38,6 @@ public class DatabaseHandler extends SQLiteOpenHelper{
     private static final String KEY_SKIN_TEMP_ARRAY = "temp_array";
     private static final String KEY_SKIN_TEMP_TIMES = "temp_times";
 
-    //private static final String KEY_IMDB_ID = "imdb_id";
-
     public DatabaseHandler(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }

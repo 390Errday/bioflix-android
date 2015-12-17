@@ -14,7 +14,6 @@ import cz.msebera.android.httpclient.entity.StringEntity;
 
 import com.loopj.android.http.AsyncHttpClient;
 
-import com.loopj.android.http.AsyncHttpResponseHandler;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.ryanarifswana.bioflix.database.model.Session;
 

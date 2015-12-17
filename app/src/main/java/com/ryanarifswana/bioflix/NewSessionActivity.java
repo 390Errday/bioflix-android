@@ -94,10 +94,6 @@ public class NewSessionActivity extends AppCompatActivity {
             intent.putExtra("viewerName", viewerName);
             startActivity(intent);
             finish();
-//            Session newSession = new Session();
-//            newSession.setMovieName(movieName);
-//            newSession.setViewerName(viewerName);
-//            db.newSession(newSession);
         }
 
     }
@@ -121,8 +117,8 @@ public class NewSessionActivity extends AppCompatActivity {
                     }
                 });
 
-        AlertDialog alert11 = alertDialog.create();
-        alert11.show();
+        AlertDialog alert = alertDialog.create();
+        alert.show();
     }
 
 }
