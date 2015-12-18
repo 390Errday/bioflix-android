@@ -268,7 +268,7 @@ public class CurrentSessionActivity extends AppCompatActivity {
             this.temp = bundle.getDouble(MSBandService.BUNDLE_SKIN_TEMP);
         }
         public void run() {
-            Log.d("Temp:", "" + temp);
+            tempView.setText((hrLocked) ? ""+temp : "...");
         }
     }
 
