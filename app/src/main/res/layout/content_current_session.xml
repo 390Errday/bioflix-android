@@ -27,6 +27,75 @@
         android:layout_alignParentEnd="true"
         android:id="@+id/realtime_sweat_monitor" />
 
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        android:id="@+id/statsContainer"
+        android:baselineAligned="false"
+        android:layout_below="@+id/timer">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="fill_parent"
+            android:text="888"
+            android:id="@+id/hrText"
+            android:textColor="@color/colorPrimary"
+            android:textSize="35sp"
+            android:layout_weight="1"
+            android:textAlignment="center"
+            android:background="@color/colorPrimaryLight"
+            android:autoText="false"
+            android:contextClickable="false"
+            android:elegantTextHeight="false"
+            android:elevation="5px"
+            android:focusableInTouchMode="true"
+            android:enabled="false"
+            android:focusable="false"
+            android:gravity="center_vertical"
+            android:layout_marginRight="2px" />
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="fill_parent"
+            android:text="88888"
+            android:id="@+id/gsrText"
+            android:textColor="@color/colorPrimary"
+            android:textSize="35sp"
+            android:layout_weight="1"
+            android:textAlignment="center"
+            android:background="@color/colorPrimaryLight"
+            android:layout_marginLeft="2dp"
+            android:layout_marginRight="2dp"
+            android:autoText="false"
+            android:contextClickable="false"
+            android:elegantTextHeight="false"
+            android:elevation="5px"
+            android:focusableInTouchMode="true"
+            android:enabled="false"
+            android:focusable="false"
+            android:gravity="center_vertical" />
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="fill_parent"
+            android:text="88.8"
+            android:id="@+id/tempText"
+            android:textColor="@color/colorPrimary"
+            android:textSize="35sp"
+            android:layout_weight="1"
+            android:textAlignment="center"
+            android:background="@color/colorPrimaryLight"
+            android:autoText="false"
+            android:contextClickable="false"
+            android:elegantTextHeight="false"
+            android:elevation="5px"
+            android:focusableInTouchMode="true"
+            android:enabled="false"
+            android:focusable="false"
+            android:gravity="center_vertical"
+            android:layout_marginLeft="2px" />
+    </LinearLayout>
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -38,84 +107,6 @@
         android:textColor="@color/colorPrimary"
         android:textSize="40sp" />
 
-    <LinearLayout
-        android:orientation="vertical"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/timer"
-        android:weightSum="1"
-        android:paddingTop="10dp"
-        android:id="@+id/linearLayout">
-
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
-            <FrameLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentStart="true"
-                android:layout_marginLeft="10dp"
-                android:outlineProvider="background">
-
-                <View android:layout_width="130dp"
-                    android:layout_height="130dp"
-                    android:background="@drawable/circle"
-                    android:layout_gravity="center_vertical"
-                    android:autoText="false"
-                    android:id="@+id/circleHr"
-                    android:focusable="false"
-                    android:contextClickable="false"
-                    android:focusableInTouchMode="false" />
-
-                <TextView
-                    android:layout_width="fill_parent"
-                    android:layout_height="wrap_content"
-                    android:text="..."
-                    android:id="@+id/hrText"
-                    android:textColor="@color/colorPrimaryLightest"
-                    android:textSize="35dp"
-                    android:layout_gravity="center"
-                    android:textAlignment="center"
-                    android:singleLine="true"
-                    android:layout_margin="10dp"
-                    android:elegantTextHeight="false"
-                    android:enabled="false" />
-
-            </FrameLayout>
-
-            <FrameLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentTop="true"
-                android:layout_alignParentEnd="true"
-                android:layout_marginRight="10dp">
-
-                <View android:layout_width="130dp"
-                    android:layout_height="130dp"
-                    android:background="@drawable/circle"
-                    android:layout_gravity="center_vertical"
-                    android:autoText="false"
-                    android:id="@+id/circleGsr"
-                    android:contextClickable="false" />
-
-                <TextView
-                    android:layout_width="fill_parent"
-                    android:layout_height="wrap_content"
-                    android:text="..."
-                    android:id="@+id/gsrText"
-                    android:textColor="@color/colorPrimaryLightest"
-                    android:textSize="35dp"
-                    android:layout_gravity="center"
-                    android:textAlignment="center"
-                    android:singleLine="true" />
-
-            </FrameLayout>
-
-        </RelativeLayout>
-
-    </LinearLayout>
-
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -123,9 +114,9 @@
         android:text="Warning"
         android:id="@+id/warningText"
         android:layout_centerHorizontal="true"
-        android:layout_below="@+id/linearLayout"
         android:textColor="@color/colorAccent2Dark"
-        android:textSize="16sp" />
+        android:textSize="16sp"
+        android:layout_below="@+id/statsContainer" />
 
     <LinearLayout
         android:orientation="horizontal"

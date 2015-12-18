@@ -33,6 +33,7 @@ public class CurrentSessionActivity extends AppCompatActivity {
     private String viewerName;
     private TextView hrRateView;
     private TextView gsrView;
+    private TextView tempView;
     private TextView timer;
     private TextView warningText;
     private TextView liveUrlText;
@@ -59,6 +60,7 @@ public class CurrentSessionActivity extends AppCompatActivity {
         viewerName = intent.getStringExtra("viewerName");
         hrRateView = (TextView) findViewById(R.id.hrText);
         gsrView = (TextView) findViewById(R.id.gsrText);
+        tempView = (TextView) findViewById(R.id.tempText);
         timer = (TextView) findViewById(R.id.timer);
         warningText = (TextView) findViewById(R.id.warningText);
         startSessionButton = (Button) findViewById(R.id.startButton);
@@ -69,6 +71,9 @@ public class CurrentSessionActivity extends AppCompatActivity {
         warningText.setVisibility(View.INVISIBLE);
         stopSessionButton.setClickable(false);
         startSessionButton.setClickable(false);
+        hrRateView.setText("...");
+        gsrView.setText("...");
+        tempView.setText("...");
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.setTitle(movieName);
