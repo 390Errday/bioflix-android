@@ -306,7 +306,7 @@ public class CurrentSessionActivity extends AppCompatActivity {
 
     public void showRegisterBandSnackbar() {
         Snackbar snackbar = Snackbar
-            .make(mainLayout, "You haven't given consent to access heart rate yet.", Snackbar.LENGTH_LONG)
+            .make(mainLayout, "You haven't given consent to access heart rate yet.", Snackbar.LENGTH_INDEFINITE)
             .setAction("Give Consent", new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
