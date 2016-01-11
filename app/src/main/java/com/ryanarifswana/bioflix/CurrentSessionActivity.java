@@ -24,6 +24,8 @@ import android.widget.Toast;
 import com.microsoft.band.sensors.HeartRateQuality;
 
 import java.lang.ref.WeakReference;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.TimeZone;
@@ -268,7 +270,15 @@ public class CurrentSessionActivity extends AppCompatActivity {
             this.temp = bundle.getDouble(MSBandService.BUNDLE_SKIN_TEMP);
         }
         public void run() {
-            tempView.setText((hrLocked) ? ""+temp : "...");
+            double roundedTemp = round(temp, 2);
+            tempView.setText((hrLocked) ? "" + roundedTemp : "...");
+        }
+
+        public double round(double value, int places) {
+            if (places < 0) throw new IllegalArgumentException();
+            BigDecimal bd = new BigDecimal(value);
+            bd = bd.setScale(places, RoundingMode.HALF_UP);
+            return bd.doubleValue();
         }
     }
 
